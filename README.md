@@ -46,8 +46,8 @@ A bit about this module
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.0 |
-| <a name="provider_datadog"></a> [datadog](#provider\_datadog) | 3.8.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.74 |
+| <a name="provider_datadog"></a> [datadog](#provider\_datadog) | ~>3.8 |
 
 ## Modules
 
