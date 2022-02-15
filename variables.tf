@@ -10,11 +10,11 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "cloudtrail_buckets" {
-  default     = []
-  description = "CloudTrail buckets to grant DataDog read access to"
-  type        = list(string)
-}
+#variable "cloudtrail_buckets" {
+#  default     = []
+#  description = "CloudTrail buckets to grant DataDog read access to"
+#  type        = list(string)
+#}
 
 variable "datadog_account_id" {
   default     = "464622532012"
