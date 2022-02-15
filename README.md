@@ -75,7 +75,6 @@ A bit about this module
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cloudtrail_buckets"></a> [cloudtrail\_buckets](#input\_cloudtrail\_buckets) | CloudTrail buckets to grant DataDog read access to | `list(string)` | `[]` | no |
 | <a name="input_datadog_account_id"></a> [datadog\_account\_id](#input\_datadog\_account\_id) | DataDog AWS account ID (should not need changed) | `string` | `"464622532012"` | no |
 | <a name="input_datadog_site_name"></a> [datadog\_site\_name](#input\_datadog\_site\_name) | DataDog site (e.g., datadoghq.com) | `string` | `"datadoghq.com"` | no |
 | <a name="input_install_log_forwarder"></a> [install\_log\_forwarder](#input\_install\_log\_forwarder) | controls whether log forwarder lambda should be installed | `bool` | `true` | no |

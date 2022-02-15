@@ -10,12 +10,6 @@ variable "tags" {
   type        = map(string)
 }
 
-#variable "cloudtrail_buckets" {
-#  default     = []
-#  description = "CloudTrail buckets to grant DataDog read access to"
-#  type        = list(string)
-#}
-
 variable "datadog_account_id" {
   default     = "464622532012"
   description = "DataDog AWS account ID (should not need changed)"
