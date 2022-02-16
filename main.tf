@@ -11,10 +11,9 @@ module "tags" {
 }
 
 locals {
-  account_id          = data.aws_caller_identity.current.account_id
-  managed_policy_arns = var.use_cspm_permissions ? ["arn:aws:iam::aws:policy/SecurityAudit"] : []
-  policy_file_path    = var.use_full_permissions ? "${path.module}/iam-fullperms.json" : "${path.module}/iam-partialperms.json"
-  tags                = module.tags.tags_no_name
+  account_id       = data.aws_caller_identity.current.account_id
+  policy_file_path = var.use_full_permissions ? "${path.module}/iam-fullperms.json" : "${path.module}/iam-partialperms.json"
+  tags             = module.tags.tags_no_name
 }
 
 resource "datadog_api_key" "datadog" {
@@ -58,10 +57,9 @@ data "aws_iam_policy_document" "assume" {
 
 resource "aws_iam_role" "datadog" {
   # this cannot be a prefix or it will create a cycle with the DD integration
-  name                = "DatadogIntegrationRole"
-  assume_role_policy  = data.aws_iam_policy_document.assume.json
-  managed_policy_arns = local.managed_policy_arns
-  tags                = local.tags
+  name               = "DatadogIntegrationRole"
+  assume_role_policy = data.aws_iam_policy_document.assume.json
+  tags               = local.tags
 }
 
 resource "aws_iam_policy" "datadog" {
@@ -69,6 +67,18 @@ resource "aws_iam_policy" "datadog" {
   path        = "/"
   policy      = file(local.policy_file_path)
   tags        = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "cspm" {
+  count = var.use_cspm_permissions ? 1 : 0
+
+  role       = aws_iam_role.datadog.name
+  policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
+}
+
+resource "aws_iam_role_policy_attachment" "datadog" {
+  role       = aws_iam_role.datadog.name
+  policy_arn = aws_iam_policy.datadog.arn
 }
 
 resource "aws_cloudformation_stack" "datadog_forwarder" {
