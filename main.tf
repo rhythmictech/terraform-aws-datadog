@@ -16,26 +16,12 @@ locals {
   tags             = module.tags.tags_no_name
 }
 
-resource "datadog_api_key" "datadog" {
-  name = var.name
-}
-
 resource "datadog_integration_aws" "datadog" {
   account_id       = local.account_id
   excluded_regions = var.integration_excluded_regions
   filter_tags      = var.integration_filter_tags
   host_tags        = var.integration_host_tags
   role_name        = "DatadogIntegrationRole"
-}
-
-resource "aws_secretsmanager_secret" "datadog" {
-  name        = "${var.name}-api-key"
-  description = "Datadog API Key"
-}
-
-resource "aws_secretsmanager_secret_version" "datadog" {
-  secret_id     = aws_secretsmanager_secret.datadog.id
-  secret_string = datadog_api_key.datadog.key
 }
 
 data "aws_iam_policy_document" "assume" {
