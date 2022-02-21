@@ -106,29 +106,3 @@ resource "datadog_integration_aws_log_collection" "datadog_forwarder" {
   account_id = local.account_id
   services   = var.log_forwarder_sources
 }
-
-
-resource "aws_cloudwatch_event_rule" "guardduty" {
-  count = var.enable_guardduty_notifications ? 1 : 0
-
-  name_prefix   = substr("gd-finding-${var.name}", 0, 35)
-  description   = "Match on GuardDuty alert (Datadog)"
-  event_pattern = <<EOT
-{
-  "detail-type": [
-    "GuardDuty Finding"
-  ],
-  "source": [
-    "aws.guardduty"
-  ]
-}
-EOT
-}
-
-resource "aws_cloudwatch_event_target" "guardduty" {
-  count = var.enable_guardduty_notifications ? 1 : 0
-
-  rule      = aws_cloudwatch_event_rule.guardduty[0].name
-  target_id = "send-to-datadog"
-  arn       = try(aws_cloudformation_stack.datadog_forwarder[0].outputs.DatadogForwarderArn, "")
-}
