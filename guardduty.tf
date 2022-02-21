@@ -29,7 +29,7 @@ resource "aws_lambda_permission" "guardduty_trigger" {
 
   action        = "lambda:InvokeFunction"
   function_name = try(aws_cloudformation_stack.datadog_forwarder[0].outputs.DatadogForwarderArn, "")
-  principal     = "eventbridge.amazonaws.com"
+  principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.guardduty[0].arn
   statement_id  = "GuardDutyTrigger"
 }
