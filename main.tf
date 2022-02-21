@@ -111,7 +111,7 @@ resource "datadog_integration_aws_log_collection" "datadog_forwarder" {
 resource "aws_cloudwatch_event_rule" "guardduty" {
   count = var.enable_guardduty_notifications ? 1 : 0
 
-  name_prefix   = "${var.name}-guardduty-finding"
+  name_prefix   = substr("gd-finding-${var.name}", 0, 64)
   description   = "Match on GuardDuty alert (Datadog)"
   event_pattern = <<EOT
 {
