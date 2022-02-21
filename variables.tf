@@ -28,6 +28,12 @@ variable "datadog_site_name" {
   type        = string
 }
 
+variable "enable_guardduty_notifications" {
+  default     = true
+  description = "Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true)"
+  type        = bool
+}
+
 variable "install_log_forwarder" {
   default     = true
   description = "controls whether log forwarder lambda should be installed"

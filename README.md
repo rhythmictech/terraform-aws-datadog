@@ -60,6 +60,8 @@ A bit about this module
 | Name | Type |
 |------|------|
 | [aws_cloudformation_stack.datadog_forwarder](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudformation_stack) | resource |
+| [aws_cloudwatch_event_rule.guardduty](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
+| [aws_cloudwatch_event_target.guardduty](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_iam_policy.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.cspm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
@@ -82,6 +84,7 @@ A bit about this module
 | <a name="input_cloudtrail_buckets"></a> [cloudtrail\_buckets](#input\_cloudtrail\_buckets) | Bucket(s) to collect CloudTrail logs from | `list(string)` | `[]` | no |
 | <a name="input_datadog_account_id"></a> [datadog\_account\_id](#input\_datadog\_account\_id) | DataDog AWS account ID (should not need changed) | `string` | `"464622532012"` | no |
 | <a name="input_datadog_site_name"></a> [datadog\_site\_name](#input\_datadog\_site\_name) | DataDog site (e.g., datadoghq.com) | `string` | `"datadoghq.com"` | no |
+| <a name="input_enable_guardduty_notifications"></a> [enable\_guardduty\_notifications](#input\_enable\_guardduty\_notifications) | Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true) | `bool` | `true` | no |
 | <a name="input_install_log_forwarder"></a> [install\_log\_forwarder](#input\_install\_log\_forwarder) | controls whether log forwarder lambda should be installed | `bool` | `true` | no |
 | <a name="input_integration_excluded_regions"></a> [integration\_excluded\_regions](#input\_integration\_excluded\_regions) | Regions to exclude from DataDog monitoring | `list(string)` | `[]` | no |
 | <a name="input_integration_filter_tags"></a> [integration\_filter\_tags](#input\_integration\_filter\_tags) | Tags to filter EC2 instances on (see https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws) | `list(string)` | `[]` | no |
