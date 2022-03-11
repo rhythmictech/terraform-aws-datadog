@@ -98,5 +98,8 @@ A bit about this module
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_iam_role_datadog"></a> [iam\_role\_datadog](#output\_iam\_role\_datadog) | IAM role assumed by Datadog resources |
+| <a name="output_lambda_arn_forwarder"></a> [lambda\_arn\_forwarder](#output\_lambda\_arn\_forwarder) | DataDog Lambda Forwarder ARN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
