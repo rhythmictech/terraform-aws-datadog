@@ -10,6 +10,12 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "cloudtrail_buckets" {
+  default     = []
+  description = "Bucket(s) to collect CloudTrail logs from"
+  type        = list(string)
+}
+
 variable "datadog_account_id" {
   default     = "464622532012"
   description = "DataDog AWS account ID (should not need changed)"
@@ -20,6 +26,12 @@ variable "datadog_site_name" {
   default     = "datadoghq.com"
   description = "DataDog site (e.g., datadoghq.com)"
   type        = string
+}
+
+variable "enable_guardduty_notifications" {
+  default     = true
+  description = "Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true)"
+  type        = bool
 }
 
 variable "install_log_forwarder" {
