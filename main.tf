@@ -69,7 +69,7 @@ resource "aws_iam_policy" "datadog" {
   tags        = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "cspm" {
+resource "aws_iam_role_policy_attachment" "cspm" { #tfsec:ignore:AVD-AWS-0057
   count = var.use_cspm_permissions ? 1 : 0
 
   role       = aws_iam_role.datadog.name
