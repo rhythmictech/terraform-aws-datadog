@@ -21,11 +21,12 @@ resource "datadog_api_key" "datadog" {
 }
 
 resource "datadog_integration_aws" "datadog" {
-  account_id       = local.account_id
-  excluded_regions = var.integration_excluded_regions
-  filter_tags      = var.integration_filter_tags
-  host_tags        = var.integration_host_tags
-  role_name        = "DatadogIntegrationRole"
+  account_id                       = local.account_id
+  account_specific_namespace_rules = var.integration_namespace_rules
+  excluded_regions                 = var.integration_excluded_regions
+  filter_tags                      = var.integration_filter_tags
+  host_tags                        = var.integration_host_tags
+  role_name                        = "DatadogIntegrationRole"
 }
 
 resource "aws_secretsmanager_secret" "datadog" {
