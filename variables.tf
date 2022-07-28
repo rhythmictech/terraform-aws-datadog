@@ -58,6 +58,12 @@ variable "integration_excluded_regions" {
   type        = list(string)
 }
 
+variable "integration_namespace_rules" {
+  default     = {}
+  description = "List of AWS services to allow in the integration. Defaults to all."
+  type        = map(bool)
+}
+
 variable "log_forwarder_sources" {
   default     = []
   type        = list(string)
