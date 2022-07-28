@@ -60,7 +60,7 @@ variable "integration_excluded_regions" {
 
 variable "integration_namespace_rules" {
   default     = { }
-  description = "List of AWS services to allow in the integration. Defaults to none."
+  description = "Map of AWS services to allow in the integration. Defaults to none."
   type        = map(bool)
 }
 
