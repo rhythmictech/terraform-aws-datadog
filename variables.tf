@@ -189,7 +189,7 @@ variable "integration_default_namespace_rules" {
     workspaces = false
     xray = false
   }
-  description = "List of AWS services to allow in the integration. Defaults to none."
+  description = "Set all services to disabled by default."
   type        = map(bool)
 }
 
