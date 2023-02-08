@@ -16,6 +16,12 @@ variable "cloudtrail_buckets" {
   type        = list(string)
 }
 
+variable "cspm_resource_collection_enabled" {
+  default     = "false"
+  description = "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection."
+  type        = string
+}
+
 variable "datadog_account_id" {
   default     = "464622532012"
   description = "DataDog AWS account ID (should not need changed)"
