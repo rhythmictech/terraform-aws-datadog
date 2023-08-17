@@ -216,3 +216,18 @@ variable "use_full_permissions" {
   description = "Controls whether DataDog is given full permissions or core permissions. Generally you want full."
   type        = bool
 }
+
+##########################################
+# RDS Enhanced Monitoring
+##########################################
+
+variable "install_rds_enhanced_monitoring_lambda" {
+  default     = true
+  description = "Bool to install the RDS Enhanced Monitoring Lambda"
+  type        = bool
+}
+variable "install_rds_enhanced_monitoring_lambda_bucket" {
+  default     = ""
+  description = "Name of S3 bucket to place zip file on when deploying the RDS Enhanced Monitoring Lambda"
+  type        = string
+}

@@ -30,6 +30,7 @@ resource "datadog_integration_aws" "datadog" {
   role_name                        = "DatadogIntegrationRole"
 }
 
+#tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "datadog" {
   name_prefix = "${var.name}-api-key"
   description = "Datadog API Key"
