@@ -15,7 +15,7 @@ resource "aws_cloudformation_stack" "rds_enhanced_monitoring_lambda" {
 
   name         = "${var.name}-rds-enhanced-monitoring-forwarder"
   capabilities = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
-  depends_on   = [aws_s3_object.rds_enhanced_monitoring_lambda_code]
+  depends_on   = [module.rds_enhanced_monitoring_lambda_code]
 
   template_body = <<EOF
 AWSTemplateFormatVersion: '2010-09-09'

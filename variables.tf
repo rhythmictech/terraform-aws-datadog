@@ -226,8 +226,3 @@ variable "install_rds_enhanced_monitoring_lambda" {
   description = "Bool to install the RDS Enhanced Monitoring Lambda"
   type        = bool
 }
-variable "install_rds_enhanced_monitoring_lambda_bucket" {
-  default     = ""
-  description = "Name of S3 bucket to place zip file on when deploying the RDS Enhanced Monitoring Lambda"
-  type        = string
-}
