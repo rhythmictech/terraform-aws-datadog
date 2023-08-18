@@ -31,7 +31,41 @@ module "datadog" {
 ```
 
 ## About
-A bit about this module
+By default it installs the DataDog log forwarder. Can also optionally install the RDS Enhanced metrics forwarder. 
+
+Example adding metrics forwarding and logging:
+```
+module "datadog" {
+  source  = "rhythmictech/datadog/aws"
+  version = "0.3.0"
+
+  name                                          = "datadog-integration"
+  cspm_resource_collection_enabled              = "true"
+  install_log_forwarder                         = true
+  integration_default_namespace_rules           = var.datadog_metric_namespaces
+  install_rds_enhanced_monitoring_lambda        = var.install_rds_enhanced_monitoring_lambda
+  log_forwarder_sources                         = ["lambda"]
+  tags                                          = local.tags
+  use_cspm_permissions                          = true
+}
+
+resource "aws_lambda_permission" "cloudwatch" {
+
+  statement_id  = "datadog-forwarder-RDSCloudWatchLogsPermission"
+  action        = "lambda:InvokeFunction"
+  function_name = reverse(split(":", module.datadog.lambda_arn_forwarder))[0]
+  principal     = "logs.amazonaws.com"
+  source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/rds/instance/production-db/postgresql:*"
+}
+resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
+  name            = "production-db"
+  log_group_name  = "/aws/rds/instance/production-db/postgresql"
+  filter_pattern  = ""
+  destination_arn = module.datadog.lambda_arn_forwarder
+}
+
+```
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
