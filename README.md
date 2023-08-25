@@ -73,8 +73,8 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.10 |
-| <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | ~>3.11 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.10 |
+| <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.11 |
 
 ## Providers
 
