@@ -23,7 +23,7 @@ resource "datadog_api_key" "datadog" {
 resource "datadog_integration_aws" "datadog" {
   account_id                       = local.account_id
   account_specific_namespace_rules = merge(var.integration_default_namespace_rules, var.integration_namespace_rules)
-  cspm_resource_collection_enabled = var.cspm_resource_collection_enabled
+  cspm_resource_collection_enabled = var.enable_cspm_resource_collection
   excluded_regions                 = var.integration_excluded_regions
   filter_tags                      = var.integration_filter_tags
   host_tags                        = var.integration_host_tags
@@ -73,7 +73,7 @@ resource "aws_iam_policy" "datadog" {
 }
 
 resource "aws_iam_role_policy_attachment" "cspm" { #tfsec:ignore:AVD-AWS-0057
-  count = var.use_cspm_permissions ? 1 : 0
+  count = var.enable_cspm_resource_collection ? 1 : 0
 
   role       = aws_iam_role.datadog.name
   policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"

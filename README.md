@@ -33,20 +33,21 @@ module "datadog" {
 ## About
 By default it installs the DataDog log forwarder. Can also optionally install the RDS Enhanced metrics forwarder. 
 
-Example adding metrics forwarding and logging:
+## RDS Metrics
+RDS Metric Capture requires an additional Lambda.
+
+*Note: terraform will not apply successfully if the account is not already configured for RDS enhanced monitoring, as the metric group the Lambda depneds on will not yet exist.*
+Example adding RDS metrics forwarding and logging:
 ```
 module "datadog" {
   source  = "rhythmictech/datadog/aws"
-  version = "0.3.0"
 
   name                                          = "datadog-integration"
-  cspm_resource_collection_enabled              = "true"
+  enable_cspm_resource_collection               = true
   install_log_forwarder                         = true
-  integration_default_namespace_rules           = var.datadog_metric_namespaces
-  install_rds_enhanced_monitoring_lambda        = var.install_rds_enhanced_monitoring_lambda
+  install_rds_enhanced_monitoring_lambda        = true
   log_forwarder_sources                         = ["lambda"]
   tags                                          = local.tags
-  use_cspm_permissions                          = true
 }
 
 resource "aws_lambda_permission" "cloudwatch" {
@@ -65,7 +66,6 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 }
 
 ```
-
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -119,12 +119,12 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloudtrail_buckets"></a> [cloudtrail\_buckets](#input\_cloudtrail\_buckets) | Bucket(s) to collect CloudTrail logs from | `list(string)` | `[]` | no |
-| <a name="input_cspm_resource_collection_enabled"></a> [cspm\_resource\_collection\_enabled](#input\_cspm\_resource\_collection\_enabled) | Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource\_collection. | `string` | `"false"` | no |
 | <a name="input_datadog_account_id"></a> [datadog\_account\_id](#input\_datadog\_account\_id) | DataDog AWS account ID (should not need changed) | `string` | `"464622532012"` | no |
 | <a name="input_datadog_site_name"></a> [datadog\_site\_name](#input\_datadog\_site\_name) | DataDog site (e.g., datadoghq.com) | `string` | `"datadoghq.com"` | no |
+| <a name="input_enable_cspm_resource_collection"></a> [enable\_cspm\_resource\_collection](#input\_enable\_cspm\_resource\_collection) | Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource\_collection. | `bool` | `false` | no |
 | <a name="input_enable_guardduty_notifications"></a> [enable\_guardduty\_notifications](#input\_enable\_guardduty\_notifications) | Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true) | `bool` | `true` | no |
 | <a name="input_install_log_forwarder"></a> [install\_log\_forwarder](#input\_install\_log\_forwarder) | controls whether log forwarder lambda should be installed | `bool` | `true` | no |
-| <a name="input_install_rds_enhanced_monitoring_lambda"></a> [install\_rds\_enhanced\_monitoring\_lambda](#input\_install\_rds\_enhanced\_monitoring\_lambda) | Bool to install the RDS Enhanced Monitoring Lambda | `bool` | `true` | no |
+| <a name="input_install_rds_enhanced_monitoring_lambda"></a> [install\_rds\_enhanced\_monitoring\_lambda](#input\_install\_rds\_enhanced\_monitoring\_lambda) | Install the RDS Enhanced Monitoring Lambda | `bool` | `false` | no |
 | <a name="input_integration_default_namespace_rules"></a> [integration\_default\_namespace\_rules](#input\_integration\_default\_namespace\_rules) | Set all services to disabled by default. | `map(bool)` | <pre>{<br>  "api_gateway": false,<br>  "application_elb": false,<br>  "apprunner": false,<br>  "appstream": false,<br>  "appsync": false,<br>  "athena": false,<br>  "auto_scaling": false,<br>  "backup": false,<br>  "billing": false,<br>  "budgeting": false,<br>  "certificatemanager": false,<br>  "cloudfront": false,<br>  "cloudhsm": false,<br>  "cloudsearch": false,<br>  "cloudwatch_events": false,<br>  "cloudwatch_logs": false,<br>  "codebuild": false,<br>  "codewhisperer": false,<br>  "cognito": false,<br>  "collect_custom_metrics": false,<br>  "connect": false,<br>  "crawl_alarms": false,<br>  "directconnect": false,<br>  "dms": false,<br>  "documentdb": false,<br>  "dynamodb": false,<br>  "dynamodbaccelerator": false,<br>  "ebs": false,<br>  "ec2": false,<br>  "ec2api": false,<br>  "ec2spot": false,<br>  "ecr": false,<br>  "ecs": false,<br>  "efs": false,<br>  "elasticache": false,<br>  "elasticbeanstalk": false,<br>  "elasticinference": false,<br>  "elastictranscoder": false,<br>  "elb": false,<br>  "emr": false,<br>  "es": false,<br>  "firehose": false,<br>  "fsx": false,<br>  "gamelift": false,<br>  "glue": false,<br>  "inspector": false,<br>  "iot": false,<br>  "keyspaces": false,<br>  "kinesis": false,<br>  "kinesis_analytics": false,<br>  "kms": false,<br>  "lambda": false,<br>  "lex": false,<br>  "mediaconnect": false,<br>  "mediaconvert": false,<br>  "medialive": false,<br>  "mediapackage": false,<br>  "mediastore": false,<br>  "mediatailor": false,<br>  "ml": false,<br>  "mq": false,<br>  "msk": false,<br>  "mwaa": false,<br>  "nat_gateway": false,<br>  "neptune": false,<br>  "network_elb": false,<br>  "networkfirewall": false,<br>  "opsworks": false,<br>  "polly": false,<br>  "privatelinkendpoints": false,<br>  "privatelinkservices": false,<br>  "rds": false,<br>  "rdsproxy": false,<br>  "redshift": false,<br>  "rekognition": false,<br>  "route53": false,<br>  "route53resolver": false,<br>  "s3": false,<br>  "s3storagelens": false,<br>  "sagemaker": false,<br>  "sagemakerendpoints": false,<br>  "sagemakerlabelingjobs": false,<br>  "sagemakermodelbuildingpipeline": false,<br>  "sagemakerprocessingjobs": false,<br>  "sagemakertrainingjobs": false,<br>  "sagemakertransformjobs": false,<br>  "sagemakerworkteam": false,<br>  "service_quotas": false,<br>  "ses": false,<br>  "shield": false,<br>  "sns": false,<br>  "sqs": false,<br>  "step_functions": false,<br>  "storage_gateway": false,<br>  "swf": false,<br>  "textract": false,<br>  "transitgateway": false,<br>  "translate": false,<br>  "trusted_advisor": false,<br>  "usage": false,<br>  "vpn": false,<br>  "waf": false,<br>  "wafv2": false,<br>  "workspaces": false,<br>  "xray": false<br>}</pre> | no |
 | <a name="input_integration_excluded_regions"></a> [integration\_excluded\_regions](#input\_integration\_excluded\_regions) | Regions to exclude from DataDog monitoring | `list(string)` | `[]` | no |
 | <a name="input_integration_filter_tags"></a> [integration\_filter\_tags](#input\_integration\_filter\_tags) | Tags to filter EC2 instances on (see https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws) | `list(string)` | `[]` | no |
@@ -133,7 +133,6 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | <a name="input_log_forwarder_sources"></a> [log\_forwarder\_sources](#input\_log\_forwarder\_sources) | List of services to automatically ingest all logs from (see https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services) | `list(string)` | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | Moniker to apply to all resources in the module | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | User-Defined tags | `map(string)` | `{}` | no |
-| <a name="input_use_cspm_permissions"></a> [use\_cspm\_permissions](#input\_use\_cspm\_permissions) | Controls whether SecurityAudit policy is attached for DataDog CSPM | `bool` | `false` | no |
 | <a name="input_use_full_permissions"></a> [use\_full\_permissions](#input\_use\_full\_permissions) | Controls whether DataDog is given full permissions or core permissions. Generally you want full. | `bool` | `true` | no |
 
 ## Outputs
