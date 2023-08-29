@@ -63,6 +63,7 @@
         "s3:GetBucketTagging",
         "s3:ListAllMyBuckets",
         "s3:PutBucketNotification",
+        "securityhub:Describe*",
         "ses:Get*",
         "sns:List*",
         "sns:Publish",
