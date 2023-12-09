@@ -16,12 +16,6 @@ variable "cloudtrail_buckets" {
   type        = list(string)
 }
 
-variable "cspm_resource_collection_enabled" {
-  default     = "false"
-  description = "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection."
-  type        = string
-}
-
 variable "datadog_account_id" {
   default     = "464622532012"
   description = "DataDog AWS account ID (should not need changed)"
@@ -32,6 +26,12 @@ variable "datadog_site_name" {
   default     = "datadoghq.com"
   description = "DataDog site (e.g., datadoghq.com)"
   type        = string
+}
+
+variable "enable_cspm_resource_collection" {
+  default     = false
+  description = "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection."
+  type        = bool
 }
 
 variable "enable_guardduty_notifications" {
@@ -189,12 +189,6 @@ variable "log_forwarder_sources" {
   description = "List of services to automatically ingest all logs from (see https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services)"
 }
 
-variable "use_cspm_permissions" {
-  default     = false
-  description = "Controls whether SecurityAudit policy is attached for DataDog CSPM"
-  type        = bool
-}
-
 variable "use_full_permissions" {
   default     = true
   description = "Controls whether DataDog is given full permissions or core permissions. Generally you want full."
@@ -206,7 +200,7 @@ variable "use_full_permissions" {
 ##########################################
 
 variable "install_rds_enhanced_monitoring_lambda" {
-  default     = true
-  description = "Bool to install the RDS Enhanced Monitoring Lambda"
+  default     = false
+  description = "Install the RDS Enhanced Monitoring Lambda"
   type        = bool
 }
