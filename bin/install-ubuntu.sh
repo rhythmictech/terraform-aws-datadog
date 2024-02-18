@@ -30,3 +30,6 @@ pre-commit init-templatedir ~/.git-template
 
 echo 'installing terraform with tfenv'
 tfenv install
+
+wget https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb
+sudo dpkg -i trivy_0.18.3_Linux-64bit.deb
