@@ -40,6 +40,12 @@ variable "enable_guardduty_notifications" {
   type        = bool
 }
 
+variable "enable_resource_collection" {
+  description = "Enable or disable resource collection"
+  type        = bool
+  default     = true # Set a default value or remove this line to make it required
+}
+
 variable "install_log_forwarder" {
   default     = true
   description = "controls whether log forwarder lambda should be installed"
