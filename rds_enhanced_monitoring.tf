@@ -1,7 +1,7 @@
 # TODO: allow version specification
 # right now you can't use variables in a module's source so we'll have to use the external provider or git submodules
 module "rds_enhanced_monitoring_lambda_code" {
-  source = "git::https://github.com/DataDog/datadog-serverless-functions.git?ref=aws-dd-forwarder-3.83.0"
+  source = "git::https://github.com/DataDog/datadog-serverless-functions.git?ref=aws-dd-forwarder-3.100.0"
 }
 
 ##########################################
