@@ -86,6 +86,7 @@ variable "integration_default_namespace_rules" {
     athena                         = false
     auto_scaling                   = false
     backup                         = false
+    bedrock                        = false
     billing                        = false
     budgeting                      = false
     certificatemanager             = false
@@ -122,6 +123,7 @@ variable "integration_default_namespace_rules" {
     firehose                       = false
     fsx                            = false
     gamelift                       = false
+    globalaccelerator              = false
     glue                           = false
     inspector                      = false
     iot                            = false
@@ -137,6 +139,7 @@ variable "integration_default_namespace_rules" {
     mediapackage                   = false
     mediastore                     = false
     mediatailor                    = false
+    memorydb                       = false
     ml                             = false
     mq                             = false
     msk                            = false
@@ -145,6 +148,7 @@ variable "integration_default_namespace_rules" {
     neptune                        = false
     network_elb                    = false
     networkfirewall                = false
+    networkmonitor                 = false
     opsworks                       = false
     polly                          = false
     privatelinkendpoints           = false
