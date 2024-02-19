@@ -18,7 +18,7 @@ repos:
         args:
         - >
           --args=--tf-exclude-downloaded-modules
-          --skip-dirs="**/.terraform"      
+          --skip-dirs="**/.terraform"
       - id: terraform_providers_lock
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
