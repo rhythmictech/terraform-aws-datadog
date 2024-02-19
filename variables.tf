@@ -40,6 +40,12 @@ variable "enable_guardduty_notifications" {
   type        = bool
 }
 
+variable "enable_resource_collection" {
+  description = "Enable or disable resource collection"
+  type        = bool
+  default     = true # Set a default value or remove this line to make it required
+}
+
 variable "install_log_forwarder" {
   default     = true
   description = "controls whether log forwarder lambda should be installed"
@@ -80,6 +86,7 @@ variable "integration_default_namespace_rules" {
     athena                         = false
     auto_scaling                   = false
     backup                         = false
+    bedrock                        = false
     billing                        = false
     budgeting                      = false
     certificatemanager             = false
@@ -116,6 +123,7 @@ variable "integration_default_namespace_rules" {
     firehose                       = false
     fsx                            = false
     gamelift                       = false
+    globalaccelerator              = false
     glue                           = false
     inspector                      = false
     iot                            = false
@@ -131,6 +139,7 @@ variable "integration_default_namespace_rules" {
     mediapackage                   = false
     mediastore                     = false
     mediatailor                    = false
+    memorydb                       = false
     ml                             = false
     mq                             = false
     msk                            = false
@@ -139,6 +148,7 @@ variable "integration_default_namespace_rules" {
     neptune                        = false
     network_elb                    = false
     networkfirewall                = false
+    networkmonitor                 = false
     opsworks                       = false
     polly                          = false
     privatelinkendpoints           = false

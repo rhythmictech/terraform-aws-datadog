@@ -1,63 +1,29 @@
 exclude: ".terraform"
 repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.81.2
+    rev: v1.86.0
     hooks:
       - id: terraform_docs
         always_run: true
       - id: terraform_fmt
+      # commenting this out as there is no workaround for the lambda code we download at runtime
+      # - id: terraform_validate
+      #   args:
+      #   - --hook-config=--retry-once-with-cleanup=true
       - id: terraform_tflint
         alias: terraform_tflint_nocreds
         name: terraform_tflint_nocreds
-      - id: terraform_tfsec
-  - repo: local
-    hooks:
-      - id: terraform_validate
-        name: terraform_validate
-        entry: |
-          bash -c '
-            AWS_DEFAULT_REGION=us-east-1
-            declare -a DIRS
-            for FILE in "$@"
-            do
-              DIRS+=($(dirname "$FILE"))
-            done
-            for DIR in $(printf "%s\n" "${DIRS[@]}" | sort -u)
-            do
-              cd $(dirname "$FILE")
-              terraform init --backend=false
-              terraform validate .
-              cd ..
-            done
-          '
-        language: system
-        verbose: true
-        files: \.tf(vars)?$
-        exclude: examples
-      - id: tflock
-        name: provider_locks
-        entry: |
-          bash -c '
-            AWS_DEFAULT_REGION=us-east-1
-            declare -a DIRS
-            for FILE in "$@"
-            do
-              DIRS+=($(dirname "$FILE"))
-            done
-            for DIR in $(printf "%s\n" "${DIRS[@]}" | sort -u)
-            do
-              cd $(dirname "$FILE")
-              terraform providers lock -platform=windows_amd64 -platform=darwin_amd64 -platform=linux_amd64
-              cd ..
-            done
-          '
-        language: system
-        verbose: true
-        files: \.tf(vars)?$
-        exclude: examples
+        exclude: 'examples/.*'
+      - id: terraform_trivy
+        args:
+        - >
+          --args=--tf-exclude-downloaded-modules
+          --skip-dirs="**/.terraform"
+      - id: terraform_providers_lock
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
+      - id: check-added-large-files
       - id: check-case-conflict
       - id: check-json
       - id: check-merge-conflict
@@ -65,7 +31,7 @@ repos:
       - id: check-yaml
         args:
           - --unsafe
-      - id: end-of-file-fixer
+      - id: detect-private-key
       - id: mixed-line-ending
         args:
           - --fix=lf

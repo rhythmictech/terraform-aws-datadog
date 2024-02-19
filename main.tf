@@ -27,6 +27,8 @@ resource "datadog_integration_aws" "datadog" {
   excluded_regions                 = var.integration_excluded_regions
   filter_tags                      = var.integration_filter_tags
   host_tags                        = var.integration_host_tags
+  metrics_collection_enabled       = true
+  resource_collection_enabled      = var.enable_resource_collection
   role_name                        = "DatadogIntegrationRole"
 }
 
@@ -96,16 +98,22 @@ resource "aws_cloudformation_stack" "datadog_forwarder" {
     DdSite            = var.datadog_site_name,
     FunctionName      = "${var.name}-forwarder"
   }
+
+  depends_on = [datadog_integration_aws.datadog]
 }
 
 resource "datadog_integration_aws_lambda_arn" "datadog_forwarder" {
   count      = var.install_log_forwarder ? 1 : 0
   account_id = local.account_id
   lambda_arn = try(aws_cloudformation_stack.datadog_forwarder[0].outputs.DatadogForwarderArn, "")
+
+  depends_on = [aws_cloudformation_stack.datadog_forwarder]
 }
 
 resource "datadog_integration_aws_log_collection" "datadog_forwarder" {
   count      = var.install_log_forwarder ? 1 : 0
   account_id = local.account_id
   services   = var.log_forwarder_sources
+
+  depends_on = [aws_cloudformation_stack.datadog_forwarder]
 }
