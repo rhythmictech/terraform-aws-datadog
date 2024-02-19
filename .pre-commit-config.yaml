@@ -16,7 +16,9 @@ repos:
         exclude: 'examples/.*'
       - id: terraform_trivy
         args:
-          - --args="--skip-dirs=\".terraform,examples\" --tf-exclude-downloaded-modules"
+        - >
+          --args=--tf-exclude-downloaded-modules
+          --skip-dirs="**/.terraform"      
       - id: terraform_providers_lock
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
