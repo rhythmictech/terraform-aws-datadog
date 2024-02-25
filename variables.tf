@@ -36,7 +36,13 @@ variable "enable_cspm_resource_collection" {
 
 variable "enable_guardduty_notifications" {
   default     = true
-  description = "Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true)"
+  description = "Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true). This routes GuardDuty events to the log forwarder. GuardDuty events can also be received as a Datadog Event through Cloud Security Monitoring."
+  type        = bool
+}
+
+variable "enable_health_notifications" {
+  default     = true
+  description = "Send AWS health notifications to Datadog (`install_log_forwarder` must be true). This routes AWS Health events to the log forwarder. Health events can also be received as a Datadog Event through the AWS Health integration."
   type        = bool
 }
 
