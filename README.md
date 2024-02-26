@@ -100,22 +100,34 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | [aws_cloudwatch_event_rule.guardduty](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_target.awshealth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_event_target.guardduty](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
+| [aws_cur_report_definition.cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cur_report_definition) | resource |
 | [aws_iam_policy.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.datadog_cost_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.cspm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.datadog_cost_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_lambda_permission.awshealth_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.cloudtrail_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.guardduty_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
+| [aws_s3_bucket.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_lifecycle_configuration.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_notification.cloudtrail_notification](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
+| [aws_s3_bucket_policy.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_public_access_block.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_versioning.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_secretsmanager_secret.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_secretsmanager_secret_version.datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [datadog_api_key.datadog](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/api_key) | resource |
 | [datadog_integration_aws.datadog](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/integration_aws) | resource |
 | [datadog_integration_aws_lambda_arn.datadog_forwarder](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/integration_aws_lambda_arn) | resource |
 | [datadog_integration_aws_log_collection.datadog_forwarder](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/integration_aws_log_collection) | resource |
+| [datadog_logs_custom_pipeline.health](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/logs_custom_pipeline) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.datadog_cost_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -125,6 +137,7 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | <a name="input_datadog_account_id"></a> [datadog\_account\_id](#input\_datadog\_account\_id) | DataDog AWS account ID (should not need changed) | `string` | `"464622532012"` | no |
 | <a name="input_datadog_site_name"></a> [datadog\_site\_name](#input\_datadog\_site\_name) | DataDog site (e.g., datadoghq.com) | `string` | `"datadoghq.com"` | no |
 | <a name="input_enable_cspm_resource_collection"></a> [enable\_cspm\_resource\_collection](#input\_enable\_cspm\_resource\_collection) | Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource\_collection. | `bool` | `false` | no |
+| <a name="input_enable_cur_collection"></a> [enable\_cur\_collection](#input\_enable\_cur\_collection) | Configure a Cost and Usage Reporting export (uses legacy CUR) suitable for ingestion by Datadog. This does not fully configure Datadog due to lack of Terraform support but does do everything on the AWS side to prepare for enabling cost monitoring in Datadog. | `bool` | `false` | no |
 | <a name="input_enable_guardduty_notifications"></a> [enable\_guardduty\_notifications](#input\_enable\_guardduty\_notifications) | Send GuardDuty notifications to Datadog (`install_log_forwarder` must be true). This routes GuardDuty events to the log forwarder. GuardDuty events can also be received as a Datadog Event through Cloud Security Monitoring. | `bool` | `true` | no |
 | <a name="input_enable_health_notifications"></a> [enable\_health\_notifications](#input\_enable\_health\_notifications) | Send AWS health notifications to Datadog (`install_log_forwarder` must be true). This routes AWS Health events to the log forwarder. Health events can also be received as a Datadog Event through the AWS Health integration. | `bool` | `true` | no |
 | <a name="input_enable_resource_collection"></a> [enable\_resource\_collection](#input\_enable\_resource\_collection) | Enable or disable resource collection | `bool` | `true` | no |
