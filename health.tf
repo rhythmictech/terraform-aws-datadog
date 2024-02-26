@@ -33,3 +33,52 @@ resource "aws_lambda_permission" "awshealth_trigger" {
   source_arn    = aws_cloudwatch_event_rule.awshealth[0].arn
   statement_id  = "AWSHealthTrigger"
 }
+
+resource "datadog_logs_custom_pipeline" "health" {
+  count = var.enable_health_notifications ? 1 : 0
+
+  filter {
+    query = "source:health"
+  }
+  name       = "AWS Health"
+  is_enabled = true
+
+  processor {
+    message_remapper {
+      is_enabled = true
+      name       = "Define `detail.eventDescription.latestDescription` as the message"
+      sources = [
+        "detail.eventDescription.latestDescription",
+      ]
+    }
+  }
+  processor {
+    attribute_remapper {
+      is_enabled           = true
+      name                 = "Map `detail.eventDescription.eventTypeCode` to event.name"
+      override_on_conflict = false
+      preserve_source      = true
+      source_type          = "attribute"
+      sources = [
+        "detail.eventDescription.eventTypeCode",
+      ]
+      target      = "evt.name"
+      target_type = "attribute"
+    }
+  }
+  processor {
+    attribute_remapper {
+      is_enabled           = true
+      name                 = "Map `detail.eventScopeCode` to tag `scope`"
+      override_on_conflict = false
+      preserve_source      = true
+      source_type          = "attribute"
+      sources = [
+        "detail.eventScopeCode",
+      ]
+      target      = "scope"
+      target_type = "tag"
+    }
+  }
+
+}
