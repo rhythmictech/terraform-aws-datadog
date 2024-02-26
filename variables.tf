@@ -28,6 +28,12 @@ variable "datadog_site_name" {
   type        = string
 }
 
+variable "enable_cur_collection" {
+  default     = false
+  description = "Configure a Cost and Usage Reporting export (uses legacy CUR) suitable for ingestion by Datadog. This does not fully configure Datadog due to lack of Terraform support but does do everything on the AWS side to prepare for enabling cost monitoring in Datadog."
+  type        = bool
+}
+
 variable "enable_cspm_resource_collection" {
   default     = false
   description = "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection."
