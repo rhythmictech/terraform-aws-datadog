@@ -1,6 +1,8 @@
 data "aws_caller_identity" "current" {
 }
 
+data "aws_region" "current" {}
+
 module "tags" {
   source  = "rhythmictech/tags/terraform"
   version = "~> 1.1"
@@ -13,6 +15,7 @@ module "tags" {
 locals {
   account_id       = data.aws_caller_identity.current.account_id
   policy_file_path = var.use_full_permissions ? "${path.module}/iam-fullperms.json" : "${path.module}/iam-partialperms.json"
+  region           = data.aws_region.current.name
   tags             = module.tags.tags_no_name
 }
 
