@@ -16,6 +16,12 @@ variable "cloudtrail_buckets" {
   type        = list(string)
 }
 
+variable "cur_bucket_suffix" {
+  default     = "datadog-cur-data"
+  description = "Suffix to append to the CUR bucket name ([ACCOUNT_ID]-[REGION]-[cur_bucket_suffix])"
+  type        = string
+}
+
 variable "datadog_account_id" {
   default     = "464622532012"
   description = "DataDog AWS account ID (should not need changed)"

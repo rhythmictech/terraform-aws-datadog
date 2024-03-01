@@ -6,7 +6,7 @@ locals {
 resource "aws_s3_bucket" "local_cur" {
   count = var.enable_cur_collection ? 1 : 0
 
-  bucket = "${local.account_id}-${local.region}-cur-data"
+  bucket = "${local.account_id}-${local.region}-${var.cur_bucket_suffix}"
   tags   = local.tags
 }
 

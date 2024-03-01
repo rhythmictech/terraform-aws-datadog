@@ -128,12 +128,14 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.datadog_cost_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloudtrail_buckets"></a> [cloudtrail\_buckets](#input\_cloudtrail\_buckets) | Bucket(s) to collect CloudTrail logs from | `list(string)` | `[]` | no |
+| <a name="input_cur_bucket_suffix"></a> [cur\_bucket\_suffix](#input\_cur\_bucket\_suffix) | Suffix to append to the CUR bucket name ([ACCOUNT\_ID]-[REGION]-[cur\_bucket\_suffix]) | `string` | `"datadog-cur-data"` | no |
 | <a name="input_datadog_account_id"></a> [datadog\_account\_id](#input\_datadog\_account\_id) | DataDog AWS account ID (should not need changed) | `string` | `"464622532012"` | no |
 | <a name="input_datadog_site_name"></a> [datadog\_site\_name](#input\_datadog\_site\_name) | DataDog site (e.g., datadoghq.com) | `string` | `"datadoghq.com"` | no |
 | <a name="input_enable_cspm_resource_collection"></a> [enable\_cspm\_resource\_collection](#input\_enable\_cspm\_resource\_collection) | Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource\_collection. | `bool` | `false` | no |
