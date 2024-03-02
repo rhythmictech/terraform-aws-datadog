@@ -46,26 +46,72 @@ resource "datadog_logs_custom_pipeline" "health" {
   processor {
     message_remapper {
       is_enabled = true
-      name       = "Define `detail.eventDescription.latestDescription` as the message"
+      name       = "Define `detail.eventDescription.0.latestDescription` as the message"
       sources = [
-        "detail.eventDescription.latestDescription",
+        "detail.eventDescription.0.latestDescription"
       ]
     }
   }
   processor {
     attribute_remapper {
       is_enabled           = true
-      name                 = "Map `detail.eventDescription.eventTypeCode` to event.name"
+      name                 = "Map `detail.eventTypeCode` to event.name"
       override_on_conflict = false
       preserve_source      = true
       source_type          = "attribute"
       sources = [
-        "detail.eventDescription.eventTypeCode",
+        "detail.eventTypeCode"
       ]
       target      = "evt.name"
       target_type = "attribute"
     }
   }
+
+  processor {
+    attribute_remapper {
+      is_enabled           = true
+      name                 = "Map `detail.service` to attribute `service`"
+      override_on_conflict = false
+      preserve_source      = true
+      source_type          = "attribute"
+      sources = [
+        "detail.service"
+      ]
+      target      = "service"
+      target_type = "attribute"
+    }
+  }
+
+  processor {
+    attribute_remapper {
+      is_enabled           = true
+      name                 = "Map `detail.statusCode` to attribute `outcome`"
+      override_on_conflict = false
+      preserve_source      = true
+      source_type          = "attribute"
+      sources = [
+        "detail.statusCode"
+      ]
+      target      = "evt.outcome"
+      target_type = "attribute"
+    }
+  }
+
+  processor {
+    attribute_remapper {
+      is_enabled           = true
+      name                 = "Map `detail.affectedEntities.0.entityValue` to attribute `host`"
+      override_on_conflict = false
+      preserve_source      = true
+      source_type          = "attribute"
+      sources = [
+        "detail.affectedEntities.0.entityValue"
+      ]
+      target      = "host"
+      target_type = "attribute"
+    }
+  }
+
   processor {
     attribute_remapper {
       is_enabled           = true
