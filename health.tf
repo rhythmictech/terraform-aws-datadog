@@ -44,6 +44,16 @@ resource "datadog_logs_custom_pipeline" "health" {
   is_enabled = true
 
   processor {
+    service_remapper {
+      is_enabled = true
+      name       = "Map `detail.service` to attribute `service`"
+      sources = [
+        "detail.service"
+      ]
+    }
+  }
+
+  processor {
     message_remapper {
       is_enabled = true
       name       = "Define `detail.eventDescription.0.latestDescription` as the message"
@@ -70,21 +80,6 @@ resource "datadog_logs_custom_pipeline" "health" {
   processor {
     attribute_remapper {
       is_enabled           = true
-      name                 = "Map `detail.service` to attribute `service`"
-      override_on_conflict = false
-      preserve_source      = true
-      source_type          = "attribute"
-      sources = [
-        "detail.service"
-      ]
-      target      = "service"
-      target_type = "attribute"
-    }
-  }
-
-  processor {
-    attribute_remapper {
-      is_enabled           = true
       name                 = "Map `detail.statusCode` to attribute `outcome`"
       override_on_conflict = false
       preserve_source      = true
@@ -100,14 +95,14 @@ resource "datadog_logs_custom_pipeline" "health" {
   processor {
     attribute_remapper {
       is_enabled           = true
-      name                 = "Map `detail.affectedEntities.0.entityValue` to attribute `host`"
+      name                 = "Map `detail.affectedEntities.0.entityValue` to attribute `usr.id`"
       override_on_conflict = false
       preserve_source      = true
       source_type          = "attribute"
       sources = [
         "detail.affectedEntities.0.entityValue"
       ]
-      target      = "host"
+      target      = "usr.id"
       target_type = "attribute"
     }
   }
