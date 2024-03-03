@@ -125,14 +125,11 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | [datadog_integration_aws_log_collection.datadog_forwarder](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/integration_aws_log_collection) | resource |
 | [datadog_logs_custom_pipeline.health](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/logs_custom_pipeline) | resource |
 | [datadog_logs_index.main](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/logs_index) | resource |
-| [datadog_monitor.anomalous_log_volume](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/monitor) | resource |
-| [datadog_monitor.daily_log_volume](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/monitor) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.datadog_cost_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [datadog_logs_indexes.indexes](https://registry.terraform.io/providers/datadog/datadog/latest/docs/data-sources/logs_indexes) | data source |
 
 ## Inputs
 
@@ -155,17 +152,13 @@ resource "aws_cloudwatch_log_subscription_filter" "rds_log_forwarding" {
 | <a name="input_integration_host_tags"></a> [integration\_host\_tags](#input\_integration\_host\_tags) | Tags to apply to instances (see https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws) | `list(string)` | `[]` | no |
 | <a name="input_integration_namespace_rules"></a> [integration\_namespace\_rules](#input\_integration\_namespace\_rules) | Map of AWS services to allow in the integration. Defaults to none. | `map(bool)` | `{}` | no |
 | <a name="input_log_forwarder_sources"></a> [log\_forwarder\_sources](#input\_log\_forwarder\_sources) | List of services to automatically ingest all logs from (see https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services) | `list(string)` | `[]` | no |
-| <a name="input_logs_anomalous_volume_alert_window"></a> [logs\_anomalous\_volume\_alert\_window](#input\_logs\_anomalous\_volume\_alert\_window) | Anomalous alert alert window (shorter thresholds may fire more often; see Datadog API for values) | `string` | `"last_2h"` | no |
-| <a name="input_logs_anomalous_volume_enabled"></a> [logs\_anomalous\_volume\_enabled](#input\_logs\_anomalous\_volume\_enabled) | Whether or not to enable anomalous log usage monitoring | `bool` | `false` | no |
-| <a name="input_logs_anomalous_volume_grouped_sources"></a> [logs\_anomalous\_volume\_grouped\_sources](#input\_logs\_anomalous\_volume\_grouped\_sources) | Comma separated sources to group by (include at least `datadog_index` for best results) | `string` | `"datadog_index,service"` | no |
-| <a name="input_logs_anomalous_volume_message"></a> [logs\_anomalous\_volume\_message](#input\_logs\_anomalous\_volume\_message) | Default message for alert | `string` | `"Anomalous spike on indexed logs for service {{service.name}}"` | no |
-| <a name="input_logs_daily_limit_main"></a> [logs\_daily\_limit\_main](#input\_logs\_daily\_limit\_main) | Daily log limit for the main index | `number` | n/a | yes |
-| <a name="input_logs_daily_volume_alert_threshold"></a> [logs\_daily\_volume\_alert\_threshold](#input\_logs\_daily\_volume\_alert\_threshold) | Percentage threshold to alert on index log volume | `number` | `0.9` | no |
-| <a name="input_logs_daily_volume_message"></a> [logs\_daily\_volume\_message](#input\_logs\_daily\_volume\_message) | Default message for alert | `string` | `"Unexpected spike on indexed logs for service {{service.name}}"` | no |
-| <a name="input_logs_daily_volume_warn_threshold"></a> [logs\_daily\_volume\_warn\_threshold](#input\_logs\_daily\_volume\_warn\_threshold) | Percentage threshold to warn on index log volume | `number` | `0.7` | no |
-| <a name="input_logs_daily_volume_warn_threshold_main"></a> [logs\_daily\_volume\_warn\_threshold\_main](#input\_logs\_daily\_volume\_warn\_threshold\_main) | Warning threshold for daily log volume for the main index | `number` | `0.9` | no |
-| <a name="input_logs_manage_indexes"></a> [logs\_manage\_indexes](#input\_logs\_manage\_indexes) | A boolean flag to manage Datadog log indexes | `bool` | `false` | no |
-| <a name="input_logs_volume_enabled"></a> [logs\_volume\_enabled](#input\_logs\_volume\_enabled) | Whether or not to enable daily log usage monitoring | `bool` | `false` | no |
+| <a name="input_logs_main_index_daily_limit"></a> [logs\_main\_index\_daily\_limit](#input\_logs\_main\_index\_daily\_limit) | Daily log limit for the main index (only used if `logs_manage_main_index == true`) | `number` | `null` | no |
+| <a name="input_logs_main_index_daily_limit_reset_offset"></a> [logs\_main\_index\_daily\_limit\_reset\_offset](#input\_logs\_main\_index\_daily\_limit\_reset\_offset) | The reset time timezone offset for the daily limit of the main logs index (specify as +HH:MM or -HH:MM) | `string` | `"+00:00"` | no |
+| <a name="input_logs_main_index_daily_limit_reset_time"></a> [logs\_main\_index\_daily\_limit\_reset\_time](#input\_logs\_main\_index\_daily\_limit\_reset\_time) | The reset time for the daily limit of the main logs index (specify as HH:MM) | `string` | `"00:00"` | no |
+| <a name="input_logs_main_index_daily_limit_warn_threshold"></a> [logs\_main\_index\_daily\_limit\_warn\_threshold](#input\_logs\_main\_index\_daily\_limit\_warn\_threshold) | Warning threshold for daily log volume for the main index (only used if `logs_manage_main_index == true`) | `number` | `0.9` | no |
+| <a name="input_logs_main_index_exclusion_filters"></a> [logs\_main\_index\_exclusion\_filters](#input\_logs\_main\_index\_exclusion\_filters) | A list of maps defining exclusion filters for the main index | <pre>list(object({<br>    name       = string<br>    is_enabled = bool<br>    filter = object({<br>      query       = string<br>      sample_rate = number<br>    })<br>  }))</pre> | `[]` | no |
+| <a name="input_logs_main_index_retention_days"></a> [logs\_main\_index\_retention\_days](#input\_logs\_main\_index\_retention\_days) | The number of days to retain logs in the main index (only used if `logs_manage_main_index == true`) | `number` | `15` | no |
+| <a name="input_logs_manage_main_index"></a> [logs\_manage\_main\_index](#input\_logs\_manage\_main\_index) | A boolean flag to manage the main Datadog logs index | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | Moniker to apply to all resources in the module | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | User-Defined tags | `map(string)` | `{}` | no |
 | <a name="input_use_full_permissions"></a> [use\_full\_permissions](#input\_use\_full\_permissions) | Controls whether DataDog is given full permissions or core permissions. Generally you want full. | `bool` | `true` | no |

@@ -234,76 +234,53 @@ variable "install_rds_enhanced_monitoring_lambda" {
 }
 
 ########################################
-# Anomalous Log Volume (against quota)
-########################################
-variable "logs_anomalous_volume_enabled" {
-  default     = false
-  description = "Whether or not to enable anomalous log usage monitoring"
-  type        = bool
-}
-
-variable "logs_anomalous_volume_alert_window" {
-  default     = "last_2h"
-  description = "Anomalous alert alert window (shorter thresholds may fire more often; see Datadog API for values)"
-  type        = string
-}
-
-variable "logs_anomalous_volume_grouped_sources" {
-  default     = "datadog_index,service"
-  description = "Comma separated sources to group by (include at least `datadog_index` for best results)"
-  type        = string
-}
-
-variable "logs_anomalous_volume_message" {
-  default     = "Anomalous spike on indexed logs for service {{service.name}}"
-  description = "Default message for alert"
-  type        = string
-}
-
-########################################
-# Daily Log Volume (against quota)
-########################################
-variable "logs_volume_enabled" {
-  default     = false
-  description = "Whether or not to enable daily log usage monitoring"
-  type        = bool
-}
-
-variable "logs_daily_volume_message" {
-  default     = "Unexpected spike on indexed logs for service {{service.name}}"
-  description = "Default message for alert"
-  type        = string
-}
-
-variable "logs_daily_volume_alert_threshold" {
-  default     = 0.9
-  description = "Percentage threshold to alert on index log volume"
-  type        = number
-}
-
-variable "logs_daily_volume_warn_threshold" {
-  default     = 0.7
-  description = "Percentage threshold to warn on index log volume"
-  type        = number
-}
-
-########################################
 # Main Index Config
 ########################################
-variable "logs_daily_limit_main" {
-  description = "Daily log limit for the main index"
-  type        = number
-  // You can set a default value or leave it without to enforce user input
-}
-
-variable "logs_daily_volume_warn_threshold_main" {
-  default     = 0.9
-  description = "Warning threshold for daily log volume for the main index"
-  type        = number
-}
-
-variable "logs_manage_indexes" {
-  description = "A boolean flag to manage Datadog log indexes"
-  type        = bool
+variable "logs_manage_main_index" {
   default     = false
+  description = "A boolean flag to manage the main Datadog logs index"
+  type        = bool
+}
+
+variable "logs_main_index_daily_limit" {
+  default     = null
+  description = "Daily log limit for the main index (only used if `logs_manage_main_index == true`)"
+  type        = number
+}
+
+variable "logs_main_index_daily_limit_reset_time" {
+  default     = "00:00"
+  description = "The reset time for the daily limit of the main logs index (specify as HH:MM)"
+  type        = string
+}
+
+variable "logs_main_index_daily_limit_reset_offset" {
+  default     = "+00:00"
+  description = "The reset time timezone offset for the daily limit of the main logs index (specify as +HH:MM or -HH:MM)"
+  type        = string
+}
+
+variable "logs_main_index_daily_limit_warn_threshold" {
+  default     = 0.9
+  description = "Warning threshold for daily log volume for the main index (only used if `logs_manage_main_index == true`)"
+  type        = number
+}
+
+variable "logs_main_index_retention_days" {
+  default     = 15
+  description = "The number of days to retain logs in the main index (only used if `logs_manage_main_index == true`)"
+  type        = number
+}
+
+variable "logs_main_index_exclusion_filters" {
+  default     = []
+  description = "A list of maps defining exclusion filters for the main index"
+  type = list(object({
+    name       = string
+    is_enabled = bool
+    filter = object({
+      query       = string
+      sample_rate = number
+    })
+  }))
 }
