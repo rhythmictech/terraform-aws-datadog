@@ -236,25 +236,25 @@ variable "install_rds_enhanced_monitoring_lambda" {
 ########################################
 # Anomalous Log Volume (against quota)
 ########################################
-variable "anomalous_log_volume_enabled" {
+variable "logs_anomalous_volume_enabled" {
   default     = false
   description = "Whether or not to enable anomalous log usage monitoring"
   type        = bool
 }
 
-variable "anomalous_log_volume_alert_window" {
+variable "logs_anomalous_volume_alert_window" {
   default     = "last_2h"
   description = "Anomalous alert alert window (shorter thresholds may fire more often; see Datadog API for values)"
   type        = string
 }
 
-variable "anomalous_log_volume_grouped_sources" {
+variable "logs_anomalous_volume_grouped_sources" {
   default     = "datadog_index,service"
   description = "Comma separated sources to group by (include at least `datadog_index` for best results)"
   type        = string
 }
 
-variable "anomalous_log_volume_message" {
+variable "logs_anomalous_volume_message" {
   default     = "Anomalous spike on indexed logs for service {{service.name}}"
   description = "Default message for alert"
   type        = string
@@ -263,26 +263,47 @@ variable "anomalous_log_volume_message" {
 ########################################
 # Daily Log Volume (against quota)
 ########################################
-variable "daily_log_volume_enabled" {
+variable "logs_volume_enabled" {
   default     = false
   description = "Whether or not to enable daily log usage monitoring"
   type        = bool
 }
 
-variable "daily_log_volume_message" {
+variable "logs_daily_volume_message" {
   default     = "Unexpected spike on indexed logs for service {{service.name}}"
   description = "Default message for alert"
   type        = string
 }
 
-variable "daily_log_volume_alert_threshold" {
+variable "logs_daily_volume_alert_threshold" {
   default     = 0.9
   description = "Percentage threshold to alert on index log volume"
   type        = number
 }
 
-variable "daily_log_volume_warn_threshold" {
+variable "logs_daily_volume_warn_threshold" {
   default     = 0.7
   description = "Percentage threshold to warn on index log volume"
   type        = number
+}
+
+########################################
+# Main Index Config
+########################################
+variable "logs_daily_limit_main" {
+  description = "Daily log limit for the main index"
+  type        = number
+  // You can set a default value or leave it without to enforce user input
+}
+
+variable "logs_daily_volume_warn_threshold_main" {
+  default     = 0.9
+  description = "Warning threshold for daily log volume for the main index"
+  type        = number
+}
+
+variable "logs_manage_indexes" {
+  description = "A boolean flag to manage Datadog log indexes"
+  type        = bool
+  default     = false
 }
