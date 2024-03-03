@@ -26,5 +26,4 @@ resource "datadog_logs_index" "main" {
       }
     }
   }
-
 }
