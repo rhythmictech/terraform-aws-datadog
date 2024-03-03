@@ -52,6 +52,16 @@ resource "datadog_logs_custom_pipeline" "health" {
       ]
     }
   }
+
+  processor {
+    service_remapper {
+      is_enabled = true
+      name       = "Map `detail.service` to service"
+      sources = [
+        "detail.service"
+      ]
+    }
+  }
   processor {
     attribute_remapper {
       is_enabled           = true
@@ -100,14 +110,14 @@ resource "datadog_logs_custom_pipeline" "health" {
   processor {
     attribute_remapper {
       is_enabled           = true
-      name                 = "Map `detail.affectedEntities.0.entityValue` to attribute `host`"
+      name                 = "Map `detail.affectedEntities.0.entityValue` to attribute `usr.id`"
       override_on_conflict = false
       preserve_source      = true
       source_type          = "attribute"
       sources = [
         "detail.affectedEntities.0.entityValue"
       ]
-      target      = "host"
+      target      = "usr.id"
       target_type = "attribute"
     }
   }
