@@ -335,7 +335,7 @@ variable "estimated_usage_detection_default_config" {
       forecast_enabled      = false
       forecast_deviations   = 1
       forecast_rollup_type  = "sum"
-      forecast_rollup_value = 2592000
+      forecast_rollup_value = 86400
       forecast_threshold    = 1000 # always override when using
     }
     logs_ingested = {
@@ -352,7 +352,7 @@ variable "estimated_usage_detection_default_config" {
       forecast_enabled      = false
       forecast_deviations   = 1
       forecast_rollup_type  = "sum"
-      forecast_rollup_value = 2592000
+      forecast_rollup_value = 86400
       forecast_threshold    = 1000 # always override when using
 
     }
