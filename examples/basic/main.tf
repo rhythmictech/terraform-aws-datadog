@@ -23,7 +23,6 @@ terraform {
 }
 
 provider "aws" {
-
 }
 
 provider "datadog" {
@@ -32,7 +31,7 @@ provider "datadog" {
 }
 
 module "datadog" {
-  source = "rhythmictech/datadog/aws"
+  source = "../.."
 
   name                  = "datadog-integration"
   install_log_forwarder = true
