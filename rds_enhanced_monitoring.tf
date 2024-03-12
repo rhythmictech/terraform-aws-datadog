@@ -9,9 +9,19 @@ resource "null_resource" "rds_enhanced_monitoring" {
   }
 }
 
+
+
+data "http" "rds_enhanced_monitoring" {
+  url = "https://raw.githubusercontent.com/DataDog/datadog-serverless-functions/aws-dd-forwarder-${var.rds_enhanced_monitoring_forwarder_version}/aws/rds_enhanced_monitoring/lambda_function.py"
+}
+
 data "archive_file" "rds_enhanced_monitoring" {
   type        = "zip"
-  source_file = "${path.module}/lambda_function.py"
+#  source_file = "${path.module}/lambda_function.py"
+  source {
+    content = data.http.rds_enhanced_monitoring.response_body
+    filename = "lambda_function.py"
+  }
   output_path = "${path.module}/lambda_function.zip"
 
   depends_on = [null_resource.rds_enhanced_monitoring]
