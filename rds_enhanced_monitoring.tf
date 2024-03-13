@@ -1,49 +1,107 @@
-# TODO: allow version specification
-# right now you can't use variables in a module's source so we'll have to use the external provider or git submodules
-module "rds_enhanced_monitoring_lambda_code" {
-  source = "git::https://github.com/DataDog/datadog-serverless-functions.git?ref=aws-dd-forwarder-3.100.0"
+# this will download harmlessly whether enabled or not
+resource "null_resource" "rds_enhanced_monitoring" {
+  triggers = {
+    script_url = "https://raw.githubusercontent.com/DataDog/datadog-serverless-functions/aws-dd-forwarder-${var.rds_enhanced_monitoring_forwarder_version}/aws/rds_enhanced_monitoring/lambda_function.py"
+  }
+
+  provisioner "local-exec" {
+    command = "curl -o ${path.module}/lambda_function.py ${self.triggers.script_url}"
+  }
 }
 
-##########################################
-# this is basically copied from https://github.com/DataDog/datadog-serverless-functions/blob/master/aws/rds_enhanced_monitoring/rds-enhanced-sam-template.yaml
-# because their documentation says to use the SAM repo which points to an out-of-date version
-# and because we load the API key differently
-##########################################
 
-resource "aws_cloudformation_stack" "rds_enhanced_monitoring_lambda" {
-  count = var.install_rds_enhanced_monitoring_lambda ? 1 : 0
 
-  name         = "${var.name}-rds-enhanced-monitoring-forwarder"
-  capabilities = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
-  depends_on   = [module.rds_enhanced_monitoring_lambda_code]
+data "http" "rds_enhanced_monitoring" {
+  url = "https://raw.githubusercontent.com/DataDog/datadog-serverless-functions/aws-dd-forwarder-${var.rds_enhanced_monitoring_forwarder_version}/aws/rds_enhanced_monitoring/lambda_function.py"
+}
 
-  template_body = <<EOF
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: 'Pushes RDS Enhanced metrics to Datadog.'
-Resources:
-  rdslambdaddfunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Description: Pushes RDS Enhanced metrics to Datadog.
-      InlineCode: |
-        ${indent(8, file("${path.module}.rds_enhanced_monitoring_lambda_code/aws/rds_enhanced_monitoring/lambda_function.py"))}
-      Environment:
-        Variables:
-          DD_API_KEY_SECRET_ARN: '${aws_secretsmanager_secret_version.datadog.arn}'
-      Events:
-        RDSEnhancedMetrics:
-          Type: CloudWatchLogs
-          Properties:
-            LogGroupName: RDSOSMetrics
-            FilterPattern: ""
-      Handler: index.lambda_handler
-      MemorySize: 128
-      Runtime: python3.9
-      Policies:
-        - AWSLambdaExecute
-        - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: '${aws_secretsmanager_secret_version.datadog.arn}'
-      Timeout: 10
-EOF
+data "archive_file" "rds_enhanced_monitoring" {
+  type = "zip"
+  #  source_file = "${path.module}/lambda_function.py"
+  source {
+    content  = data.http.rds_enhanced_monitoring.response_body
+    filename = "lambda_function.py"
+  }
+  output_path = "${path.module}/lambda_function.zip"
+
+  depends_on = [null_resource.rds_enhanced_monitoring]
+}
+
+resource "aws_lambda_function" "rds_enhanced_monitoring" {
+  count = var.enable_rds_enhanced_monitoring_lambda ? 1 : 0
+
+  function_name = "${var.name}-rds-enhanced-monitoring"
+
+  description = "Pushes RDS Enhanced metrics to Datadog."
+  filename    = data.archive_file.rds_enhanced_monitoring.output_path
+  runtime     = "python3.9"
+  handler     = "index.lambda_handler"
+  memory_size = 128
+  role        = aws_iam_role.rds_enhanced_monitoring[0].arn
+  timeout     = 10
+
+  environment {
+    variables = {
+      DD_API_KEY_SECRET_ARN = aws_secretsmanager_secret_version.datadog.arn
+    }
+  }
+}
+
+data "aws_iam_policy_document" "rds_enhanced_monitoring_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "rds_enhanced_monitoring" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:*:*:*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = [aws_secretsmanager_secret_version.datadog.arn]
+    effect    = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "rds_enhanced_monitoring" {
+  count = var.enable_rds_enhanced_monitoring_lambda ? 1 : 0
+
+  name_prefix = "${var.name}-rds-enhanced-monitoring"
+  description = "IAM policy for Lambda to access CloudWatch Logs and SecretsManager"
+  policy      = data.aws_iam_policy_document.rds_enhanced_monitoring.json
+}
+
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  count              = var.enable_rds_enhanced_monitoring_lambda ? 1 : 0
+  name_prefix        = "${var.name}-rds-enhanced-monitoring"
+  assume_role_policy = data.aws_iam_policy_document.rds_enhanced_monitoring_assume.json
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
+  count      = var.enable_rds_enhanced_monitoring_lambda ? 1 : 0
+  role       = aws_iam_role.rds_enhanced_monitoring[0].name
+  policy_arn = aws_iam_policy.rds_enhanced_monitoring[0].arn
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "rds_enhanced_monitoring" {
+  count = var.enable_rds_enhanced_monitoring_lambda ? 1 : 0
+
+  name            = "${var.name}-rds-enhanced-monitoring-forwarder"
+  log_group_name  = "RDSOSMetrics"
+  filter_pattern  = ""
+  destination_arn = aws_lambda_function.rds_enhanced_monitoring[0].arn
 }

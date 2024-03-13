@@ -62,6 +62,16 @@ resource "datadog_logs_custom_pipeline" "health" {
       ]
     }
   }
+
+  processor {
+    service_remapper {
+      is_enabled = true
+      name       = "Map `detail.service` to service"
+      sources = [
+        "detail.service"
+      ]
+    }
+  }
   processor {
     attribute_remapper {
       is_enabled           = true

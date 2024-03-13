@@ -153,7 +153,8 @@ data "aws_iam_policy_document" "datadog_cost_policy" {
   }
 
   statement {
-    sid     = "DatadogCostCheckAccuracy"
+    sid = "DatadogCostCheckAccuracy"
+    #trivy:ignore:avd-aws-0057
     actions = ["ce:Get*"]
     effect  = "Allow"
     #trivy:ignore:avd-aws-0057
@@ -161,9 +162,10 @@ data "aws_iam_policy_document" "datadog_cost_policy" {
   }
 
   statement {
-    sid       = "DatadogCostListCURs"
-    actions   = ["cur:DescribeReportDefinitions"]
-    effect    = "Allow"
+    sid     = "DatadogCostListCURs"
+    actions = ["cur:DescribeReportDefinitions"]
+    effect  = "Allow"
+    #trivy:ignore:avd-aws-0057
     resources = ["*"]
   }
 
@@ -172,6 +174,7 @@ data "aws_iam_policy_document" "datadog_cost_policy" {
     effect = "Allow"
     #trivy:ignore:avd-aws-0057
     resources = ["*"]
+    #trivy:ignore:avd-aws-0057
     actions = [
       "organizations:Describe*",
       "organizations:List*"

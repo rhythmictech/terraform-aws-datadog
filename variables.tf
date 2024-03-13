@@ -227,8 +227,162 @@ variable "use_full_permissions" {
 # RDS Enhanced Monitoring
 ##########################################
 
-variable "install_rds_enhanced_monitoring_lambda" {
+variable "enable_rds_enhanced_monitoring_lambda" {
   default     = false
   description = "Install the RDS Enhanced Monitoring Lambda"
   type        = bool
+}
+
+variable "rds_enhanced_monitoring_forwarder_version" {
+  default     = "3.103.0"
+  description = "Version of the Datadog RDS enhanced monitoring lambda to use (module is only tested against the default version)"
+  type        = string
+
+}
+########################################
+# Main Index Config
+########################################
+variable "logs_manage_main_index" {
+  default     = false
+  description = "A boolean flag to manage the main Datadog logs index"
+  type        = bool
+}
+
+variable "logs_main_index_daily_limit" {
+  default     = null
+  description = "Daily log limit for the main index (only used if `logs_manage_main_index == true`)"
+  type        = number
+}
+
+variable "logs_main_index_daily_limit_reset_time" {
+  default     = "00:00"
+  description = "The reset time for the daily limit of the main logs index (specify as HH:MM)"
+  type        = string
+}
+
+variable "logs_main_index_daily_limit_reset_offset" {
+  default     = "+00:00"
+  description = "The reset time timezone offset for the daily limit of the main logs index (specify as +HH:MM or -HH:MM)"
+  type        = string
+}
+
+variable "logs_main_index_daily_limit_warn_threshold" {
+  default     = 0.9
+  description = "Warning threshold for daily log volume for the main index (only used if `logs_manage_main_index == true`)"
+  type        = number
+}
+
+variable "logs_main_index_retention_days" {
+  default     = 15
+  description = "The number of days to retain logs in the main index (only used if `logs_manage_main_index == true`)"
+  type        = number
+}
+
+variable "logs_main_index_exclusion_filters" {
+  default     = []
+  description = "A list of maps defining exclusion filters for the main index"
+  type = list(object({
+    name       = string
+    is_enabled = bool
+    filter = object({
+      query       = string
+      sample_rate = number
+    })
+  }))
+}
+
+########################################
+# Estimated Usage Anomaly/Forecast Detection
+########################################
+variable "enable_estimated_usage_detection" {
+  default     = false
+  description = "Enable estimated usage anomaly and forecast monitoring"
+  type        = bool
+}
+
+variable "estimated_usage_detection_default_config" {
+  description = "Map of default usage monitoring settings for each metric type. All are disabled by default. Use `usage_anomaly_services` to enable services and alternately override default settings"
+
+  default = {
+    hosts = {
+      # anomaly monitoring
+      anomaly_enabled     = false
+      anomaly_span        = "last_1d"
+      anomaly_threshold   = 0.15
+      anomaly_window      = "last_1h"
+      anomaly_deviations  = 1
+      anomaly_seasonality = "daily"
+      anomaly_rollup      = 600
+
+      # forecast monitoring
+      forecast_enabled      = false
+      forecast_deviations   = 1
+      forecast_rollup_type  = "avg"
+      forecast_rollup_value = 300
+      forecast_threshold    = 1000 # always override when using
+    }
+    logs_indexed = {
+      # anomaly monitoring
+      anomaly_enabled     = false
+      anomaly_span        = "last_1d"
+      anomaly_threshold   = 0.15
+      anomaly_window      = "last_1h"
+      anomaly_deviations  = 2
+      anomaly_seasonality = "hourly"
+      anomaly_rollup      = 60
+
+      # forecast monitoring
+      forecast_enabled      = false
+      forecast_deviations   = 1
+      forecast_rollup_type  = "sum"
+      forecast_rollup_value = 86400
+      forecast_threshold    = 1000 # always override when using
+    }
+    logs_ingested = {
+      # anomaly monitoring
+      anomaly_enabled     = false
+      anomaly_window      = "last_1h"
+      anomaly_span        = "last_1d"
+      anomaly_threshold   = 0.15
+      anomaly_deviations  = 2
+      anomaly_seasonality = "hourly"
+      anomaly_rollup      = 60
+
+      # forecast monitoring
+      forecast_enabled      = false
+      forecast_deviations   = 1
+      forecast_rollup_type  = "sum"
+      forecast_rollup_value = 86400
+      forecast_threshold    = 1000 # always override when using
+
+    }
+  }
+
+  type = map(object({
+    anomaly_enabled       = bool
+    anomaly_span          = string
+    anomaly_threshold     = number
+    anomaly_window        = string
+    anomaly_deviations    = number
+    anomaly_seasonality   = string
+    anomaly_rollup        = number
+    forecast_enabled      = bool
+    forecast_deviations   = number
+    forecast_rollup_type  = string
+    forecast_rollup_value = number
+    forecast_threshold    = number
+  }))
+
+}
+
+variable "estimated_usage_detection_config" {
+  default     = {}
+  description = "Map of usage types to monitor."
+  type        = map(any)
+}
+
+variable "estimated_usage_anomaly_message" {
+  default     = "Datadog usage anomaly detected"
+  description = "Message for usage anomaly alerts"
+  type        = string
 }

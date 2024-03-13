@@ -1,3 +1,5 @@
+lambda_function.*
+
 #  Local .terraform directories
 **/.terraform/*
 
