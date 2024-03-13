@@ -16,10 +16,10 @@ data "http" "rds_enhanced_monitoring" {
 }
 
 data "archive_file" "rds_enhanced_monitoring" {
-  type        = "zip"
-#  source_file = "${path.module}/lambda_function.py"
+  type = "zip"
+  #  source_file = "${path.module}/lambda_function.py"
   source {
-    content = data.http.rds_enhanced_monitoring.response_body
+    content  = data.http.rds_enhanced_monitoring.response_body
     filename = "lambda_function.py"
   }
   output_path = "${path.module}/lambda_function.zip"

@@ -97,16 +97,18 @@ module "datadog" {
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | >= 2.2.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.62 |
 | <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.37 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.4 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_archive"></a> [archive](#provider\_archive) | >= 2.2.0 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.37.0 |
-| <a name="provider_datadog"></a> [datadog](#provider\_datadog) | 3.36.1 |
-| <a name="provider_null"></a> [null](#provider\_null) | >= 3.1.0 |
+| <a name="provider_archive"></a> [archive](#provider\_archive) | 2.4.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.39.1 |
+| <a name="provider_datadog"></a> [datadog](#provider\_datadog) | 3.37.0 |
+| <a name="provider_http"></a> [http](#provider\_http) | 3.4.2 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.2 |
 
 ## Modules
 
@@ -164,6 +166,7 @@ module "datadog" {
 | [aws_iam_policy_document.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.rds_enhanced_monitoring_assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [http_http.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
 
 ## Inputs
 
