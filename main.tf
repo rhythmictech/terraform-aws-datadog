@@ -1,7 +1,11 @@
 data "aws_caller_identity" "current" {
 }
 
-data "aws_region" "current" {}
+data "aws_region" "current" {
+}
+
+data "aws_partition" "current" {
+}
 
 module "tags" {
   source  = "rhythmictech/tags/terraform"
@@ -14,6 +18,7 @@ module "tags" {
 
 locals {
   account_id       = data.aws_caller_identity.current.account_id
+  partition        = data.aws_partition.current.partition
   policy_file_path = var.use_full_permissions ? "${path.module}/iam-fullperms.json" : "${path.module}/iam-partialperms.json"
   region           = data.aws_region.current.name
   tags             = module.tags.tags_no_name
@@ -105,7 +110,7 @@ resource "aws_iam_role_policy_attachment" "cspm" { #tfsec:ignore:AVD-AWS-0057
   count = var.enable_cspm_resource_collection && var.access_method == "role" ? 1 : 0
 
   role       = aws_iam_role.datadog[0].name
-  policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
+  policy_arn = "arn:${local.partition}:iam::aws:policy/SecurityAudit"
 }
 
 resource "aws_iam_user_policy_attachment" "cspm_user" { #tfsec:ignore:AVD-AWS-0057
