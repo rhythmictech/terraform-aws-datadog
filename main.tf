@@ -32,7 +32,11 @@ resource "datadog_integration_aws" "datadog" {
   host_tags                        = var.integration_host_tags
   metrics_collection_enabled       = true
   resource_collection_enabled      = var.enable_resource_collection
-  role_name                        = "DatadogIntegrationRole"
+  role_name                        = var.access_method == "role" ? "DatadogIntegrationRole" : null
+
+  # use iam user for govcloud and china
+  access_key_id     = var.access_method == "user" ? aws_iam_access_key.datadog[0].id : null
+  secret_access_key = var.access_method == "user" ? aws_iam_access_key.datadog[0].secret : null
 }
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
@@ -63,11 +67,31 @@ data "aws_iam_policy_document" "assume" {
   }
 }
 
+moved {
+  from = aws_iam_role.datadog
+  to   = aws_iam_role.datadog[0]
+}
+
 resource "aws_iam_role" "datadog" {
+  count = var.access_method == "role" ? 1 : 0
+
   # this cannot be a prefix or it will create a cycle with the DD integration
   name               = "DatadogIntegrationRole"
   assume_role_policy = data.aws_iam_policy_document.assume.json
   tags               = local.tags
+}
+
+resource "aws_iam_user" "datadog" {
+  count = var.access_method == "user" ? 1 : 0
+
+  name = "DatadogIntegrationUser"
+  tags = local.tags
+}
+
+resource "aws_iam_access_key" "datadog" {
+  count = var.access_method == "user" ? 1 : 0
+
+  user = aws_iam_user.datadog[0].name
 }
 
 resource "aws_iam_policy" "datadog" {
@@ -78,14 +102,35 @@ resource "aws_iam_policy" "datadog" {
 }
 
 resource "aws_iam_role_policy_attachment" "cspm" { #tfsec:ignore:AVD-AWS-0057
-  count = var.enable_cspm_resource_collection ? 1 : 0
+  count = var.enable_cspm_resource_collection && var.access_method == "role" ? 1 : 0
 
-  role       = aws_iam_role.datadog.name
+  role       = aws_iam_role.datadog[0].name
   policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
 }
 
+resource "aws_iam_user_policy_attachment" "cspm_user" { #tfsec:ignore:AVD-AWS-0057
+  count = var.enable_cspm_resource_collection && var.access_method == "user" ? 1 : 0
+
+  user       = aws_iam_user.datadog[0].name
+  policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
+}
+
+moved {
+  from = aws_iam_role_policy_attachment.datadog
+  to   = aws_iam_role_policy_attachment.datadog[0]
+}
+
 resource "aws_iam_role_policy_attachment" "datadog" {
-  role       = aws_iam_role.datadog.name
+  count = var.access_method == "role" ? 1 : 0
+
+  role       = aws_iam_role.datadog[0].name
+  policy_arn = aws_iam_policy.datadog.arn
+}
+
+resource "aws_iam_user_policy_attachment" "datadog" {
+  count = var.access_method == "user" ? 1 : 0
+
+  user       = aws_iam_user.datadog[0].name
   policy_arn = aws_iam_policy.datadog.arn
 }
 

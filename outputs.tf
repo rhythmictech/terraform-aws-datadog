@@ -1,6 +1,6 @@
 output "iam_role_datadog" {
   description = "IAM role assumed by Datadog resources"
-  value       = aws_iam_role.datadog.name
+  value       = try(aws_iam_role.datadog[0].name, "")
 }
 
 output "lambda_arn_forwarder" {

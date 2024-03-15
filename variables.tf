@@ -10,6 +10,17 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "access_method" {
+  default     = "role"
+  description = "Access method to use for Datadog integration (recommended not to change unless using GovCloud or China regions, must be either `user` or `role`)"
+  type        = string
+
+  validation {
+    condition     = var.access_method == "user" || var.access_method == "role"
+    error_message = "The access_method must be either 'user' or 'role'."
+  }
+}
+
 variable "cloudtrail_buckets" {
   default     = []
   description = "Bucket(s) to collect CloudTrail logs from"
