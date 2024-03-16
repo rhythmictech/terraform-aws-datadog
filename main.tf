@@ -117,7 +117,7 @@ resource "aws_iam_user_policy_attachment" "cspm_user" { #tfsec:ignore:AVD-AWS-00
   count = var.enable_cspm_resource_collection && var.access_method == "user" ? 1 : 0
 
   user       = aws_iam_user.datadog[0].name
-  policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
+  policy_arn = "arn:${local.partition}:iam::aws:policy/SecurityAudit"
 }
 
 moved {
