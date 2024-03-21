@@ -21,12 +21,6 @@ variable "access_method" {
   }
 }
 
-variable "cloudtrail_buckets" {
-  default     = []
-  description = "Bucket(s) to collect CloudTrail logs from"
-  type        = list(string)
-}
-
 variable "cur_bucket_suffix" {
   default     = "datadog-cur-data"
   description = "Suffix to append to the CUR bucket name ([ACCOUNT_ID]-[REGION]-[cur_bucket_suffix])"
@@ -73,6 +67,18 @@ variable "enable_resource_collection" {
   description = "Enable or disable resource collection"
   type        = bool
   default     = true # Set a default value or remove this line to make it required
+}
+
+variable "forward_buckets" {
+  default     = []
+  description = "Bucket(s) to collect logs from (using object notifications)"
+  type        = list(string)
+}
+
+variable "forward_log_groups" {
+  default     = []
+  description = "CloudWatch Log Group names to collect logs from (using filter subscriptions)"
+  type        = list(string)
 }
 
 variable "install_log_forwarder" {

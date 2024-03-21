@@ -138,35 +138,3 @@ resource "aws_iam_user_policy_attachment" "datadog" {
   user       = aws_iam_user.datadog[0].name
   policy_arn = aws_iam_policy.datadog.arn
 }
-
-resource "aws_cloudformation_stack" "datadog_forwarder" {
-  count = var.install_log_forwarder ? 1 : 0
-
-  name         = "${var.name}-log-forwarder"
-  capabilities = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
-  template_url = "https://datadog-cloudformation-template.s3.amazonaws.com/aws/forwarder/latest.yaml"
-
-  parameters = {
-    DdApiKeySecretArn = aws_secretsmanager_secret.datadog.arn,
-    DdSite            = var.datadog_site_name,
-    FunctionName      = "${var.name}-forwarder"
-  }
-
-  depends_on = [datadog_integration_aws.datadog]
-}
-
-resource "datadog_integration_aws_lambda_arn" "datadog_forwarder" {
-  count      = var.install_log_forwarder ? 1 : 0
-  account_id = local.account_id
-  lambda_arn = try(aws_cloudformation_stack.datadog_forwarder[0].outputs.DatadogForwarderArn, "")
-
-  depends_on = [aws_cloudformation_stack.datadog_forwarder]
-}
-
-resource "datadog_integration_aws_log_collection" "datadog_forwarder" {
-  count      = var.install_log_forwarder ? 1 : 0
-  account_id = local.account_id
-  services   = var.log_forwarder_sources
-
-  depends_on = [aws_cloudformation_stack.datadog_forwarder]
-}
