@@ -37,7 +37,7 @@ resource "aws_lambda_permission" "bucket_trigger" {
   function_name = try(aws_cloudformation_stack.datadog_forwarder[0].outputs.DatadogForwarderArn, "")
   principal     = "s3.amazonaws.com"
   source_arn    = "arn:aws:s3:::${each.value}"
-  statement_id  = "DatadogForwarderTrigger"
+  statement_id  = "${substr(replace(each.value, "/", "_"), 0, 67)}-AllowExecutionFromS3"
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
