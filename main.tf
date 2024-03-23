@@ -107,14 +107,14 @@ resource "aws_iam_policy" "datadog" {
 }
 
 resource "aws_iam_role_policy_attachment" "cspm" { #tfsec:ignore:AVD-AWS-0057
-  count = var.enable_cspm_resource_collection && var.access_method == "role" ? 1 : 0
+  count = (var.enable_cspm_resource_collection || var.enable_resource_collection) && var.access_method == "role" ? 1 : 0
 
   role       = aws_iam_role.datadog[0].name
   policy_arn = "arn:${local.partition}:iam::aws:policy/SecurityAudit"
 }
 
 resource "aws_iam_user_policy_attachment" "cspm_user" { #tfsec:ignore:AVD-AWS-0057
-  count = var.enable_cspm_resource_collection && var.access_method == "user" ? 1 : 0
+  count = (var.enable_cspm_resource_collection || var.enable_resource_collection) && var.access_method == "user" ? 1 : 0
 
   user       = aws_iam_user.datadog[0].name
   policy_arn = "arn:${local.partition}:iam::aws:policy/SecurityAudit"
