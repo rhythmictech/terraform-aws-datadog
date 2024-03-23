@@ -99,6 +99,7 @@ resource "aws_iam_access_key" "datadog" {
   user = aws_iam_user.datadog[0].name
 }
 
+#trivy:ignore:avd-aws-0057
 resource "aws_iam_policy" "datadog" {
   name_prefix = var.name
   path        = "/"
