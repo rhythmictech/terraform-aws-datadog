@@ -13,6 +13,7 @@ repos:
         exclude: examples\/
       - id: terraform_tflint
         alias: terraform_tflint_nocreds
+        exclude: examples\/
         name: terraform_tflint_nocreds
       - id: terraform_trivy
         args:
