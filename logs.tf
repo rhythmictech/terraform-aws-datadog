@@ -5,6 +5,7 @@ resource "datadog_logs_index" "main" {
   retention_days                           = var.logs_main_index_retention_days
   daily_limit                              = var.logs_main_index_daily_limit
   daily_limit_warning_threshold_percentage = var.logs_main_index_daily_limit_warn_threshold
+  disable_daily_limit                      = var.logs_main_index_daily_limit == null ? true : false
 
   daily_limit_reset {
     reset_time       = var.logs_main_index_daily_limit_reset_time

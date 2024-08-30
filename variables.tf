@@ -66,7 +66,7 @@ variable "enable_health_notifications" {
 variable "enable_resource_collection" {
   description = "Enable or disable resource collection"
   type        = bool
-  default     = true # Set a default value or remove this line to make it required
+  default     = true
 }
 
 variable "forward_buckets" {
