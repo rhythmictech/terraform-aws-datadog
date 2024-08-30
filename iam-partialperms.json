@@ -5,7 +5,8 @@
         "cloudwatch:Get*",
         "cloudwatch:List*",
         "ec2:Describe*",
-        "support:*",
+        "support:DescribeTrustedAdvisor*",
+        "support:RefreshTrustedAdvisorCheck",
         "tag:GetResources",
         "tag:GetTagKeys",
         "tag:GetTagValues"
