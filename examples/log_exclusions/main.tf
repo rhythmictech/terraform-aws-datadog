@@ -46,15 +46,19 @@ module "datadog" {
   logs_manage_main_index = true
   logs_main_index_exclusion_filters = [
     {
-      name = "Exclude Datadog agent logs"
+      name       = "Exclude Datadog agent logs"
+      is_enabled = true
       filter = {
-        query = "source:runtime-security-agent"
+        query       = "source:runtime-security-agent"
+        sample_rate = 0
       }
     },
     {
-      name = "Exclude Datadog CloudTrail logs"
+      name       = "Exclude Datadog CloudTrail logs"
+      is_enabled = true
       filter = {
-        query = "service:cloudtrail @userIdentity.assumed_role:DatadogIntegrationRole status:info"
+        query       = "service:cloudtrail @userIdentity.assumed_role:DatadogIntegrationRole status:info"
+        sample_rate = 0
       }
     }
   ]
