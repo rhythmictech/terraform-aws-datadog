@@ -38,7 +38,24 @@ provider "datadog" {
 module "datadog" {
   source = "../.."
 
-  name                  = "datadog-integration"
-  install_log_forwarder = true
-  log_forwarder_sources = ["lambda"]
+  name                    = "datadog-integration"
+  install_log_forwarder   = true
+  integration_filter_tags = ["datadog_managed:true"]
+
+  # logs
+  logs_manage_main_index = true
+  logs_main_index_exclusion_filters = [
+    {
+      name = "Exclude Datadog agent logs"
+      filter = {
+        query = "source:runtime-security-agent"
+      }
+    },
+    {
+      name = "Exclude Datadog CloudTrail logs"
+      filter = {
+        query = "service:cloudtrail @userIdentity.assumed_role:DatadogIntegrationRole status:info"
+      }
+    }
+  ]
 }

@@ -99,6 +99,7 @@ module "datadog" {
 | <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.37 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.4 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.12 |
 
 ## Providers
 
@@ -109,6 +110,7 @@ module "datadog" {
 | <a name="provider_datadog"></a> [datadog](#provider\_datadog) | 3.37.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | 3.4.2 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.2 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.12.1 |
 
 ## Modules
 
@@ -167,6 +169,7 @@ module "datadog" {
 | [datadog_monitor.anomaly_usage](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/monitor) | resource |
 | [datadog_monitor.forecast_usage](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/monitor) | resource |
 | [null_resource.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [time_sleep.wait_datadog_forwarder](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [archive_file.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |

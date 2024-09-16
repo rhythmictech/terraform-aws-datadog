@@ -22,12 +22,18 @@ resource "datadog_integration_aws_lambda_arn" "datadog_forwarder" {
   depends_on = [aws_cloudformation_stack.datadog_forwarder]
 }
 
+resource "time_sleep" "wait_datadog_forwarder" {
+  create_duration = "30s"
+
+  depends_on = [datadog_integration_aws_lambda_arn.datadog_forwarder]
+}
+
 resource "datadog_integration_aws_log_collection" "datadog_forwarder" {
   count      = var.install_log_forwarder ? 1 : 0
   account_id = local.account_id
   services   = var.log_forwarder_sources
 
-  depends_on = [aws_cloudformation_stack.datadog_forwarder]
+  depends_on = [time_sleep.wait_datadog_forwarder]
 }
 
 resource "aws_lambda_permission" "bucket_trigger" {
