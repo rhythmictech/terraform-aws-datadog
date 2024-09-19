@@ -69,6 +69,12 @@ variable "enable_resource_collection" {
   default     = true
 }
 
+variable "enable_securityhub_notifications" {
+  default     = false
+  description = "Send Security Hub notifications to Datadog (`install_log_forwarder` must be true). This routes Security Hub events to the log forwarder."
+  type        = bool
+}
+
 variable "forward_buckets" {
   default     = []
   description = "Bucket(s) to collect logs from (using object notifications)"

@@ -99,6 +99,7 @@ module "datadog" {
 | <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.37 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.4 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.12 |
 
 ## Providers
 
@@ -109,6 +110,7 @@ module "datadog" {
 | <a name="provider_datadog"></a> [datadog](#provider\_datadog) | 3.37.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | 3.4.2 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.2 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.12.1 |
 
 ## Modules
 
@@ -123,8 +125,10 @@ module "datadog" {
 | [aws_cloudformation_stack.datadog_forwarder](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudformation_stack) | resource |
 | [aws_cloudwatch_event_rule.awshealth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_rule.guardduty](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
+| [aws_cloudwatch_event_rule.securityhub_to_datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_target.awshealth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_event_target.guardduty](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
+| [aws_cloudwatch_event_target.securityhub_to_datadog](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_log_subscription_filter.cloudwatch_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_subscription_filter) | resource |
 | [aws_cloudwatch_log_subscription_filter.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_subscription_filter) | resource |
 | [aws_cur_report_definition.cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cur_report_definition) | resource |
@@ -146,6 +150,7 @@ module "datadog" {
 | [aws_lambda_permission.bucket_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.cloudwatch_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.guardduty_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
+| [aws_lambda_permission.securityhub_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_s3_bucket.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_lifecycle_configuration.local_cur](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_notification.bucket_notification](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
@@ -164,6 +169,7 @@ module "datadog" {
 | [datadog_monitor.anomaly_usage](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/monitor) | resource |
 | [datadog_monitor.forecast_usage](https://registry.terraform.io/providers/datadog/datadog/latest/docs/resources/monitor) | resource |
 | [null_resource.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [time_sleep.wait_datadog_forwarder](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [archive_file.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -190,6 +196,7 @@ module "datadog" {
 | <a name="input_enable_health_notifications"></a> [enable\_health\_notifications](#input\_enable\_health\_notifications) | Send AWS health notifications to Datadog (`install_log_forwarder` must be true). This routes AWS Health events to the log forwarder. Health events can also be received as a Datadog Event through the AWS Health integration. | `bool` | `true` | no |
 | <a name="input_enable_rds_enhanced_monitoring_lambda"></a> [enable\_rds\_enhanced\_monitoring\_lambda](#input\_enable\_rds\_enhanced\_monitoring\_lambda) | Install the RDS Enhanced Monitoring Lambda | `bool` | `false` | no |
 | <a name="input_enable_resource_collection"></a> [enable\_resource\_collection](#input\_enable\_resource\_collection) | Enable or disable resource collection | `bool` | `true` | no |
+| <a name="input_enable_securityhub_notifications"></a> [enable\_securityhub\_notifications](#input\_enable\_securityhub\_notifications) | Send Security Hub notifications to Datadog (`install_log_forwarder` must be true). This routes Security Hub events to the log forwarder. | `bool` | `false` | no |
 | <a name="input_estimated_usage_anomaly_message"></a> [estimated\_usage\_anomaly\_message](#input\_estimated\_usage\_anomaly\_message) | Message for usage anomaly alerts | `string` | `"Datadog usage anomaly detected"` | no |
 | <a name="input_estimated_usage_detection_config"></a> [estimated\_usage\_detection\_config](#input\_estimated\_usage\_detection\_config) | Map of usage types to monitor. | `map(any)` | `{}` | no |
 | <a name="input_estimated_usage_detection_default_config"></a> [estimated\_usage\_detection\_default\_config](#input\_estimated\_usage\_detection\_default\_config) | Map of default usage monitoring settings for each metric type. All are disabled by default. Use `usage_anomaly_services` to enable services and alternately override default settings | <pre>map(object({<br>    anomaly_enabled       = bool<br>    anomaly_span          = string<br>    anomaly_threshold     = number<br>    anomaly_window        = string<br>    anomaly_deviations    = number<br>    anomaly_seasonality   = string<br>    anomaly_rollup        = number<br>    forecast_enabled      = bool<br>    forecast_deviations   = number<br>    forecast_rollup_type  = string<br>    forecast_rollup_value = number<br>    forecast_threshold    = number<br>  }))</pre> | <pre>{<br>  "hosts": {<br>    "anomaly_deviations": 1,<br>    "anomaly_enabled": false,<br>    "anomaly_rollup": 600,<br>    "anomaly_seasonality": "daily",<br>    "anomaly_span": "last_1d",<br>    "anomaly_threshold": 0.15,<br>    "anomaly_window": "last_1h",<br>    "forecast_deviations": 1,<br>    "forecast_enabled": false,<br>    "forecast_rollup_type": "avg",<br>    "forecast_rollup_value": 300,<br>    "forecast_threshold": 1000<br>  },<br>  "logs_indexed": {<br>    "anomaly_deviations": 2,<br>    "anomaly_enabled": false,<br>    "anomaly_rollup": 60,<br>    "anomaly_seasonality": "hourly",<br>    "anomaly_span": "last_1d",<br>    "anomaly_threshold": 0.15,<br>    "anomaly_window": "last_1h",<br>    "forecast_deviations": 1,<br>    "forecast_enabled": false,<br>    "forecast_rollup_type": "sum",<br>    "forecast_rollup_value": 86400,<br>    "forecast_threshold": 1000<br>  },<br>  "logs_ingested": {<br>    "anomaly_deviations": 2,<br>    "anomaly_enabled": false,<br>    "anomaly_rollup": 60,<br>    "anomaly_seasonality": "hourly",<br>    "anomaly_span": "last_1d",<br>    "anomaly_threshold": 0.15,<br>    "anomaly_window": "last_1h",<br>    "forecast_deviations": 1,<br>    "forecast_enabled": false,<br>    "forecast_rollup_type": "sum",<br>    "forecast_rollup_value": 86400,<br>    "forecast_threshold": 1000<br>  }<br>}</pre> | no |
