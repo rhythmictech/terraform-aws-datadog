@@ -1,9 +1,9 @@
 # terraform-aws-datadog
-[![tflint](https://github.com/rhythmictech/terraform-aws-datadog/workflows/tflint/badge.svg?branch=master&event=push)](https://github.com/rhythmictech/terraform-aws-datadog/actions?query=workflow%3Atflint+event%3Apush+branch%3Amaster)
-[![tfsec](https://github.com/rhythmictech/terraform-aws-datadog/workflows/tfsec/badge.svg?branch=master&event=push)](https://github.com/rhythmictech/terraform-aws-datadog/actions?query=workflow%3Atfsec+event%3Apush+branch%3Amaster)
-[![yamllint](https://github.com/rhythmictech/terraform-aws-datadog/workflows/yamllint/badge.svg?branch=master&event=push)](https://github.com/rhythmictech/terraform-aws-datadog/actions?query=workflow%3Ayamllint+event%3Apush+branch%3Amaster)
-[![misspell](https://github.com/rhythmictech/terraform-aws-datadog/workflows/misspell/badge.svg?branch=master&event=push)](https://github.com/rhythmictech/terraform-aws-datadog/actions?query=workflow%3Amisspell+event%3Apush+branch%3Amaster)
-[![pre-commit-check](https://github.com/rhythmictech/terraform-aws-datadog/workflows/pre-commit-check/badge.svg?branch=master&event=push)](https://github.com/rhythmictech/terraform-aws-datadog/actions?query=workflow%3Apre-commit-check+event%3Apush+branch%3Amaster)
+[![tflint](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/tflint.yaml/badge.svg)](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/tflint.yaml)
+[![trivy](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/trivy.yaml/badge.svg)](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/trivy.yaml)
+[![yamllint](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/yamllint.yaml/badge.svg)](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/yamllint.yaml)
+[![misspell](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/misspell.yaml/badge.svg)](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/misspell.yaml)
+[![pre-commit-check](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/rhythmictech/terraform-aws-datadog/actions/workflows/pre-commit.yaml)
 <a href="https://twitter.com/intent/follow?screen_name=RhythmicTech"><img src="https://img.shields.io/twitter/follow/RhythmicTech?style=social&logo=twitter" alt="follow on Twitter"></a>
 
 Creates and manages a Datadog AWS integration. This module performs the necessary integrations in both Datadog and AWS and thus uses providers for each. Supported features include:
@@ -95,8 +95,8 @@ module "datadog" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5 |
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | >= 2.2.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.62 |
-| <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.37 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.41 |
+| <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.39 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.4 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.12 |
