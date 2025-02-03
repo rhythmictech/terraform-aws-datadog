@@ -95,8 +95,8 @@ module "datadog" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5 |
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | >= 2.2.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.62 |
-| <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.37 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.41 |
+| <a name="requirement_datadog"></a> [datadog](#requirement\_datadog) | >= 3.39 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.4 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.12 |

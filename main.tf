@@ -29,15 +29,15 @@ resource "datadog_api_key" "datadog" {
 }
 
 resource "datadog_integration_aws" "datadog" {
-  account_id                       = local.account_id
-  account_specific_namespace_rules = merge(var.integration_default_namespace_rules, var.integration_namespace_rules)
-  cspm_resource_collection_enabled = var.enable_cspm_resource_collection
-  excluded_regions                 = var.integration_excluded_regions
-  filter_tags                      = var.integration_filter_tags
-  host_tags                        = var.integration_host_tags
-  metrics_collection_enabled       = true
-  resource_collection_enabled      = var.enable_resource_collection
-  role_name                        = var.access_method == "role" ? "DatadogIntegrationRole" : null
+  account_id                           = local.account_id
+  account_specific_namespace_rules     = merge(var.integration_default_namespace_rules, var.integration_namespace_rules)
+  cspm_resource_collection_enabled     = var.enable_cspm_resource_collection
+  excluded_regions                     = var.integration_excluded_regions
+  filter_tags                          = var.integration_filter_tags
+  host_tags                            = var.integration_host_tags
+  metrics_collection_enabled           = true
+  extended_resource_collection_enabled = var.enable_resource_collection
+  role_name                            = var.access_method == "role" ? "DatadogIntegrationRole" : null
 
   # use iam user for govcloud and china
   access_key_id     = var.access_method == "user" ? aws_iam_access_key.datadog[0].id : null
