@@ -324,7 +324,15 @@ variable "enable_estimated_usage_detection" {
 }
 
 variable "estimated_usage_detection_default_config" {
-  description = "Map of default usage monitoring settings for each metric type. All are disabled by default. Use `usage_anomaly_services` to enable services and alternately override default settings"
+  description = <<END
+Map of default usage monitoring settings for each metric type. All are disabled by default.
+
+Anomaly monitoring uses Datadog's anomaly detection feature. See https://docs.datadoghq.com/monitors/types/anomaly/ for documentation.
+
+Estimated usage monitoring uses simple thresholds on the `estimated_usage` metric family. By default, host thresholds are by day,
+as Datadog uses the peak instance count for the month on a 99th percentile basis. It may make sense to make this a shorter window,
+especially if you have variable workloads. Log monitors are cumulative across the month, from the first day of the month at 00:00 UTC.
+END
 
   default = {
     hosts = {
@@ -337,12 +345,10 @@ variable "estimated_usage_detection_default_config" {
       anomaly_seasonality = "daily"
       anomaly_rollup      = 600
 
-      # forecast monitoring
-      forecast_enabled      = false
-      forecast_deviations   = 1
-      forecast_rollup_type  = "avg"
-      forecast_rollup_value = 300
-      forecast_threshold    = 1000 # always override when using
+      # estimated usage monitoring
+      estimated_usage_enabled   = false
+      estimated_usage_span      = "current_1d"
+      estimated_usage_threshold = 1000 # always override when using
     }
     logs_indexed = {
       # anomaly monitoring
@@ -354,12 +360,10 @@ variable "estimated_usage_detection_default_config" {
       anomaly_seasonality = "hourly"
       anomaly_rollup      = 60
 
-      # forecast monitoring
-      forecast_enabled      = false
-      forecast_deviations   = 1
-      forecast_rollup_type  = "sum"
-      forecast_rollup_value = 86400
-      forecast_threshold    = 1000 # always override when using
+      # estimated usage monitoring
+      estimated_usage_enabled   = false
+      estimated_usage_span      = "current_1mo" # not recommended to change this
+      estimated_usage_threshold = 1000          # always override when using
     }
     logs_ingested = {
       # anomaly monitoring
@@ -371,29 +375,25 @@ variable "estimated_usage_detection_default_config" {
       anomaly_seasonality = "hourly"
       anomaly_rollup      = 60
 
-      # forecast monitoring
-      forecast_enabled      = false
-      forecast_deviations   = 1
-      forecast_rollup_type  = "sum"
-      forecast_rollup_value = 86400
-      forecast_threshold    = 1000 # always override when using
+      # estimated usage monitoring
+      estimated_usage_enabled   = false
+      estimated_usage_span      = "current_1mo" # not recommended to change this
+      estimated_usage_threshold = 1000          # always override when using
 
     }
   }
 
   type = map(object({
-    anomaly_enabled       = bool
-    anomaly_span          = string
-    anomaly_threshold     = number
-    anomaly_window        = string
-    anomaly_deviations    = number
-    anomaly_seasonality   = string
-    anomaly_rollup        = number
-    forecast_enabled      = bool
-    forecast_deviations   = number
-    forecast_rollup_type  = string
-    forecast_rollup_value = number
-    forecast_threshold    = number
+    anomaly_enabled           = bool
+    anomaly_span              = string
+    anomaly_threshold         = number
+    anomaly_window            = string
+    anomaly_deviations        = number
+    anomaly_seasonality       = string
+    anomaly_rollup            = number
+    estimated_usage_enabled   = bool
+    estimated_usage_span      = optional(string)
+    estimated_usage_threshold = number
   }))
 
 }
@@ -408,4 +408,32 @@ variable "estimated_usage_anomaly_message" {
   default     = "Datadog usage anomaly detected"
   description = "Message for usage anomaly alerts"
   type        = string
+}
+
+variable "estimated_usage_threshold_message" {
+  default     = "Datadog usage threshold exceeded"
+  description = "Message for usage threshold alerts"
+  type        = string
+}
+
+variable "log_limit_exceeded_message" {
+  default     = null
+  description = "Message for log limit warning alerts (alert suppressed if null)"
+  type        = string
+}
+
+variable "renotify_interval" {
+  default     = 30
+  description = "Renotify interval for all alerts (set to null to disable)"
+  type        = number
+}
+
+variable "renotify_statuses" {
+  default     = ["alert"]
+  description = "Renotify statuses for all alerts (not used if `renotify_interval` is null)"
+  type        = list(string)
+  validation {
+    condition     = alltrue([for s in var.renotify_statuses : contains(["alert", "no data", "warn"], s)])
+    error_message = "The renotify_statuses must be a list of 'alert', 'no data', or 'warn'."
+  }
 }
