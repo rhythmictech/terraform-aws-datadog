@@ -67,7 +67,7 @@ resource "datadog_monitor" "limit_exceeded" {
   name         = "Daily Log Quota Warning Threshold Exceeded"
   include_tags = true
   message      = var.log_limit_exceeded_message
-  query        = "events(\"source:datadog \"daily quota exceeded\"\").rollup(\"count\").last(\"15m\") >= 1"
+  query        = "events(\"source:datadog \"daily quota reached\"\").rollup(\"count\").last(\"15m\") >= 1"
 
   type = "event-v2 alert"
 
