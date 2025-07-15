@@ -149,7 +149,7 @@ data "aws_iam_policy_document" "datadog_cost_policy" {
     sid       = "DatadogCostGetBill"
     actions   = ["s3:GetObject"]
     effect    = "Allow"
-    resources = ["${local.local_bucket_arn}/${local.account_id}/*"]
+    resources = ["${local.local_bucket_arn}/*"]
   }
 
   statement {
