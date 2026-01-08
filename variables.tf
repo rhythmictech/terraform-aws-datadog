@@ -233,6 +233,12 @@ variable "integration_default_namespace_rules" {
   type        = map(bool)
 }
 
+variable "log_forwarder_lambda_log_retention_days" {
+  default     = 90
+  description = "The number of days to retain logs for the log forwarder lambda"
+  type        = number
+}
+
 variable "log_forwarder_sources" {
   default     = []
   type        = list(string)
