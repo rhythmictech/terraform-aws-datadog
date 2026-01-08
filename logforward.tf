@@ -8,7 +8,8 @@ resource "aws_cloudformation_stack" "datadog_forwarder" {
   parameters = {
     DdApiKeySecretArn = aws_secretsmanager_secret.datadog.arn,
     DdSite            = var.datadog_site_name,
-    FunctionName      = "${var.name}-forwarder"
+    FunctionName      = "${var.name}-forwarder",
+    LogRetentionInDays = var.log_forwarder_lambda_log_retention_days
   }
 
   depends_on = [datadog_integration_aws.datadog]
