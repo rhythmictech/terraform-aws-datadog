@@ -190,7 +190,6 @@ variable "integration_default_namespace_rules" {
     network_elb                    = false
     networkfirewall                = false
     networkmonitor                 = false
-    opsworks                       = false
     polly                          = false
     privatelinkendpoints           = false
     privatelinkservices            = false
