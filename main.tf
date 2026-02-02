@@ -28,7 +28,7 @@ resource "datadog_api_key" "datadog" {
   name = var.name
 }
 
-resource "datadog_integration_aws" "datadog" {
+resource "datadog_integration_aws_account" "datadog" {
   account_id                           = local.account_id
   account_specific_namespace_rules     = merge(var.integration_default_namespace_rules, var.integration_namespace_rules)
   cspm_resource_collection_enabled     = var.enable_cspm_resource_collection
