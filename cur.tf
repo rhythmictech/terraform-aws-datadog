@@ -42,6 +42,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "local_cur" {
     id     = "Object&Version Expiration"
     status = "Enabled"
 
+    filter {}
+
     noncurrent_version_expiration {
       noncurrent_days = 32
     }

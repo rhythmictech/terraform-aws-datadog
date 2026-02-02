@@ -29,19 +29,65 @@ resource "datadog_api_key" "datadog" {
 }
 
 resource "datadog_integration_aws_account" "datadog" {
-  account_id                           = local.account_id
-  account_specific_namespace_rules     = merge(var.integration_default_namespace_rules, var.integration_namespace_rules)
-  cspm_resource_collection_enabled     = var.enable_cspm_resource_collection
-  excluded_regions                     = var.integration_excluded_regions
-  filter_tags                          = var.integration_filter_tags
-  host_tags                            = var.integration_host_tags
-  metrics_collection_enabled           = true
-  extended_resource_collection_enabled = var.enable_resource_collection
-  role_name                            = var.access_method == "role" ? "DatadogIntegrationRole" : null
+  aws_account_id = local.account_id
+  aws_partition  = local.partition == "aws-us-gov" ? "aws-us-gov" : (local.partition == "aws-cn" ? "aws-cn" : "aws")
 
-  # use iam user for govcloud and china
-  access_key_id     = var.access_method == "user" ? aws_iam_access_key.datadog[0].id : null
-  secret_access_key = var.access_method == "user" ? aws_iam_access_key.datadog[0].secret : null
+  aws_regions {
+    include_all = length(var.integration_excluded_regions) == 0
+    exclude_only = length(var.integration_excluded_regions) > 0 ? var.integration_excluded_regions : null
+  }
+
+  auth_config {
+    dynamic "aws_auth_config_role" {
+      for_each = var.access_method == "role" ? [1] : []
+      content {
+        role_name = "DatadogIntegrationRole"
+      }
+    }
+
+    dynamic "aws_auth_config_keys" {
+      for_each = var.access_method == "user" ? [1] : []
+      content {
+        access_key_id     = aws_iam_access_key.datadog[0].id
+        secret_access_key = aws_iam_access_key.datadog[0].secret
+      }
+    }
+  }
+
+  metrics_config {
+    enabled                = true
+    collect_custom_metrics = lookup(merge(var.integration_default_namespace_rules, var.integration_namespace_rules), "collect_custom_metrics", false)
+
+    automute_enabled    = true
+    collect_cloudwatch_alarms = lookup(merge(var.integration_default_namespace_rules, var.integration_namespace_rules), "crawl_alarms", false)
+
+    dynamic "tag_filters" {
+      for_each = length(var.integration_filter_tags) > 0 ? [1] : []
+      content {
+        namespace = "AWS/EC2"
+        tags      = var.integration_filter_tags
+      }
+    }
+  }
+
+  resources_config {
+    cloud_security_posture_management_collection = var.enable_cspm_resource_collection
+    extended_collection                          = var.enable_resource_collection
+  }
+
+  logs_config {
+    lambda_forwarder {
+      sources = var.log_forwarder_sources
+    }
+  }
+
+  traces_config {
+    xray_services {
+      include_all = lookup(merge(var.integration_default_namespace_rules, var.integration_namespace_rules), "xray", false)
+    }
+  }
+
+  account_tags = var.integration_host_tags
 }
 
 #trivy:ignore:avd-aws-0098
@@ -67,7 +113,7 @@ data "aws_iam_policy_document" "assume" {
     condition {
       test     = "StringEquals"
       variable = "sts:ExternalId"
-      values   = [datadog_integration_aws.datadog.external_id]
+      values   = [datadog_integration_aws_account.datadog.auth_config[0].aws_auth_config_role[0].external_id]
     }
   }
 }
