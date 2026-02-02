@@ -28,7 +28,7 @@ resource "datadog_api_key" "datadog" {
   name = var.name
 }
 
-resource "datadog_integration_aws_account" "datadog" {
+resource "datadog_integration_aws" "datadog" {
   account_id                           = local.account_id
   account_specific_namespace_rules     = merge(var.integration_default_namespace_rules, var.integration_namespace_rules)
   cspm_resource_collection_enabled     = var.enable_cspm_resource_collection
@@ -38,10 +38,10 @@ resource "datadog_integration_aws_account" "datadog" {
   metrics_collection_enabled           = true
   extended_resource_collection_enabled = var.enable_resource_collection
   role_name                            = var.access_method == "role" ? "DatadogIntegrationRole" : null
-  
+
   # use iam user for govcloud and china
   access_key_id     = var.access_method == "user" ? aws_iam_access_key.datadog[0].id : null
-  secret_access_key = var.access_method == "user" ? aws_iam_access_key.datadog[0].secret : null  traces_config {
+  secret_access_key = var.access_method == "user" ? aws_iam_access_key.datadog[0].secret : null
 }
 
 #trivy:ignore:avd-aws-0098
