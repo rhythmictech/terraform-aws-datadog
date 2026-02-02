@@ -12,7 +12,7 @@ resource "aws_cloudformation_stack" "datadog_forwarder" {
     LogRetentionInDays = var.log_forwarder_lambda_log_retention_days
   }
 
-  depends_on = [datadog_integration_aws.datadog]
+  depends_on = [datadog_integration_aws_account.datadog]
 }
 
 resource "datadog_integration_aws_lambda_arn" "datadog_forwarder" {
