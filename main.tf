@@ -55,6 +55,18 @@ resource "aws_secretsmanager_secret_version" "datadog" {
   secret_string = datadog_api_key.datadog.key
 }
 
+# The Datadog provider v3.x no longer returns external_id on refresh, causing it
+# to be cleared from state after initial creation. This resource captures it once
+# and preserves it. Pass var.external_id when adopting existing integrations where
+# the value has already been lost from state.
+resource "terraform_data" "external_id" {
+  input = var.external_id != null ? var.external_id : datadog_integration_aws.datadog.external_id
+
+  lifecycle {
+    ignore_changes = [input]
+  }
+}
+
 data "aws_iam_policy_document" "assume" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -67,7 +79,7 @@ data "aws_iam_policy_document" "assume" {
     condition {
       test     = "StringEquals"
       variable = "sts:ExternalId"
-      values   = [datadog_integration_aws.datadog.external_id]
+      values   = [terraform_data.external_id.output]
     }
   }
 }

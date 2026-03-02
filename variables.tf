@@ -33,6 +33,12 @@ variable "datadog_account_id" {
   type        = string
 }
 
+variable "external_id" {
+  default     = null
+  description = "Datadog external ID for the IAM assume role trust policy. Only required when upgrading existing integrations where the Datadog provider (v3.x+) has already cleared the value from state. Find the current value in the existing IAM role's trust policy in AWS."
+  type        = string
+}
+
 variable "datadog_site_name" {
   default     = "datadoghq.com"
   description = "DataDog site (e.g., datadoghq.com)"
