@@ -6,9 +6,9 @@ resource "aws_cloudformation_stack" "datadog_forwarder" {
   template_url = "https://datadog-cloudformation-template.s3.amazonaws.com/aws/forwarder/latest.yaml"
 
   parameters = {
-    DdApiKeySecretArn = aws_secretsmanager_secret.datadog.arn,
-    DdSite            = var.datadog_site_name,
-    FunctionName      = "${var.name}-forwarder",
+    DdApiKeySecretArn  = aws_secretsmanager_secret.datadog.arn,
+    DdSite             = var.datadog_site_name,
+    FunctionName       = "${var.name}-forwarder",
     LogRetentionInDays = var.log_forwarder_lambda_log_retention_days
   }
 
