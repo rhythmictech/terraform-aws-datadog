@@ -21,6 +21,12 @@ variable "access_method" {
   }
 }
 
+variable "access_key_rotation_days" {
+  default     = 90
+  description = "Number of days before rotating the IAM access key (only applies when access_method = 'user')"
+  type        = number
+}
+
 variable "cur_bucket_suffix" {
   default     = "datadog-cur-data"
   description = "Suffix to append to the CUR bucket name ([ACCOUNT_ID]-[REGION]-[cur_bucket_suffix])"

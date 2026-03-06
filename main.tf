@@ -105,10 +105,21 @@ resource "aws_iam_user" "datadog" {
   tags = local.tags
 }
 
+resource "time_rotating" "access_key" {
+  count = var.access_method == "user" ? 1 : 0
+
+  rotation_days = var.access_key_rotation_days
+}
+
 resource "aws_iam_access_key" "datadog" {
   count = var.access_method == "user" ? 1 : 0
 
   user = aws_iam_user.datadog[0].name
+
+  lifecycle {
+    create_before_destroy = true
+    replace_triggered_by  = [time_rotating.access_key[0]]
+  }
 }
 
 #trivy:ignore:avd-aws-0057
