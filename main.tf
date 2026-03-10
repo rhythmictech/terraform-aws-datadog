@@ -111,6 +111,12 @@ resource "time_rotating" "access_key" {
   rotation_days = var.access_key_rotation_days
 }
 
+resource "time_static" "access_key" {
+  count = var.access_method == "user" ? 1 : 0
+
+  rfc3339 = time_rotating.access_key[0].rfc3339
+}
+
 resource "aws_iam_access_key" "datadog" {
   count = var.access_method == "user" ? 1 : 0
 
@@ -118,7 +124,7 @@ resource "aws_iam_access_key" "datadog" {
 
   lifecycle {
     create_before_destroy = true
-    replace_triggered_by  = [time_rotating.access_key[0]]
+    replace_triggered_by  = [time_static.access_key[0]]
   }
 }
 
