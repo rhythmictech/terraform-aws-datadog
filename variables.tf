@@ -169,7 +169,6 @@ variable "integration_default_namespace_rules" {
     elasticache                    = false
     elasticbeanstalk               = false
     elasticinference               = false
-    elastictranscoder              = false
     elb                            = false
     emr                            = false
     es                             = false
