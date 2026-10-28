@@ -21,6 +21,12 @@ variable "access_method" {
   }
 }
 
+variable "access_key_rotation_days" {
+  default     = 90
+  description = "Number of days before rotating the IAM access key (only applies when access_method = 'user')"
+  type        = number
+}
+
 variable "cur_bucket_suffix" {
   default     = "datadog-cur-data"
   description = "Suffix to append to the CUR bucket name ([ACCOUNT_ID]-[REGION]-[cur_bucket_suffix])"
@@ -30,6 +36,12 @@ variable "cur_bucket_suffix" {
 variable "datadog_account_id" {
   default     = "464622532012"
   description = "DataDog AWS account ID (should not need changed)"
+  type        = string
+}
+
+variable "external_id" {
+  default     = null
+  description = "Datadog external ID for the IAM assume role trust policy. Only required when upgrading existing integrations where the Datadog provider (v3.x+) has already cleared the value from state. Find the current value in the existing IAM role's trust policy in AWS."
   type        = string
 }
 
@@ -157,7 +169,6 @@ variable "integration_default_namespace_rules" {
     elasticache                    = false
     elasticbeanstalk               = false
     elasticinference               = false
-    elastictranscoder              = false
     elb                            = false
     emr                            = false
     es                             = false
@@ -190,7 +201,6 @@ variable "integration_default_namespace_rules" {
     network_elb                    = false
     networkfirewall                = false
     networkmonitor                 = false
-    opsworks                       = false
     polly                          = false
     privatelinkendpoints           = false
     privatelinkservices            = false
@@ -231,6 +241,12 @@ variable "integration_default_namespace_rules" {
 
   description = "Set all services to disabled by default."
   type        = map(bool)
+}
+
+variable "log_forwarder_lambda_log_retention_days" {
+  default     = 90
+  description = "The number of days to retain logs for the log forwarder lambda"
+  type        = number
 }
 
 variable "log_forwarder_sources" {

@@ -1,3 +1,8 @@
+output "external_id" {
+  description = "Datadog external ID used in the IAM assume role trust policy"
+  value       = terraform_data.external_id.output
+}
+
 output "iam_role_datadog" {
   description = "IAM role assumed by Datadog resources"
   value       = try(aws_iam_role.datadog[0].name, "")
