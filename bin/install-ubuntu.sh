@@ -31,5 +31,13 @@ pre-commit init-templatedir ~/.git-template
 echo 'installing terraform with tfenv'
 tfenv install
 
-wget https://github.com/aquasecurity/trivy/releases/download/v0.49.1/trivy_0.49.1_Linux-64bit.deb
-sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
+# upstream prunes old releases, so this pin needs a periodic bump
+TRIVY_VERSION=0.74.0
+wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb
+sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
+
+# pre-warm trivy's checks bundle. pre-commit runs terraform_trivy on several
+# directories in parallel, and concurrent downloads into the cold shared cache
+# leave a half-written bundle that fails to compile.
+echo 'pre-warming trivy checks bundle'
+trivy config "$(mktemp -d)" >/dev/null 2>&1 || true
