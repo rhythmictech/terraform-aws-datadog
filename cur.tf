@@ -1,4 +1,6 @@
 locals {
+  cur_report_name  = "cur"
+  cur_s3_prefix    = "cur"
   local_bucket_arn = var.enable_cur_collection ? aws_s3_bucket.local_cur[0].arn : "arn:aws:s3:::example-bucket"
 }
 
@@ -149,7 +151,7 @@ data "aws_iam_policy_document" "datadog_cost_policy" {
     sid       = "DatadogCostGetBill"
     actions   = ["s3:GetObject"]
     effect    = "Allow"
-    resources = ["${local.local_bucket_arn}/${local.account_id}/*"]
+    resources = ["${local.local_bucket_arn}/${local.cur_s3_prefix}/${local.cur_report_name}/*"]
   }
 
   statement {
@@ -201,7 +203,7 @@ resource "aws_iam_role_policy_attachment" "datadog_cost_policy" {
 resource "aws_cur_report_definition" "cur" {
   count = var.enable_cur_collection ? 1 : 0
 
-  report_name = "cur"
+  report_name = local.cur_report_name
 
   additional_schema_elements = ["RESOURCES"]
   compression                = "GZIP"
@@ -209,7 +211,7 @@ resource "aws_cur_report_definition" "cur" {
   refresh_closed_reports     = true
   report_versioning          = "CREATE_NEW_REPORT"
   s3_bucket                  = aws_s3_bucket.local_cur[0].id
-  s3_prefix                  = "cur"
+  s3_prefix                  = local.cur_s3_prefix
   s3_region                  = "us-east-1"
   time_unit                  = "HOURLY"
 
